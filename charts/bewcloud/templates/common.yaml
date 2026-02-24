@@ -1,0 +1,125 @@
+{{/* Preprocess values and prepare config file */}}
+{{- define "bewcloud.preprocess" -}}
+secrets:
+  {{- if not (hasKey .Values.secret.postgres "existingSecret") }}
+  postgres:
+    stringData:
+      POSTGRESQL_HOST: {{ required "PostgreSQL host is required" .Values.secret.postgres.host}}
+      POSTGRESQL_USER: {{ required "PostgreSQL user is required" .Values.secret.postgres.user}}
+      POSTGRESQL_PASSWORD: {{ required "PostgreSQL password is required" .Values.secret.postgres.password}}
+      POSTGRESQL_DBNAME: {{ required "PostgreSQL database name is required" .Values.secret.postgres.dbname}}
+      POSTGRESQL_PORT: {{ required "PostgreSQL port is required" .Values.secret.postgres.port | quote }}
+  {{- end }}
+  {{- if not (hasKey .Values.secret.jwt "existingSecret") }}
+  jwt:
+    stringData:
+      JWT_SECRET: {{ required "JWT secret is required" .Values.secret.jwt.secret}}
+  {{- end}}
+  {{- if not (hasKey .Values.secret.password "existingSecret") }}
+  password:
+    stringData:
+      PASSWORD_SALT: {{ required "Password salt is required" .Values.secret.password.salt}}
+  {{- end }}
+  {{- if hasKey .Values.secret "mfa" }}
+  {{- if not (hasKey .Values.secret.mfa "existingSecret") }}
+  mfa:
+    stringData:
+      MFA_KEY: {{ required "MFA key is required" .Values.secret.mfa.key}}
+      MFA_SALT: {{ required "MFA salt is required" .Values.secret.mfa.salt}}
+  {{- end }}
+  {{- end }}
+  {{- if hasKey .Values.secret "oidc" }}
+  {{- if not (hasKey .Values.secret.oidc "existingSecret") }}
+  oidc:
+    stringData:
+      OIDC_CLIENT_ID: {{ required "OIDC client id is required" .Values.secret.oidc.clientId}}
+      OIDC_CLIENT_SECRET: {{ required "OIDC client secret is required" .Values.secret.oidc.clientSecret}}
+  {{- end }}
+  {{- end }}
+  {{- if hasKey .Values.secret "smtp" }}
+  {{- if not (hasKey .Values.secret.smtp "existingSecret") }}
+  smtp:
+    stringData:
+      SMTP_USERNAME: {{ required "SMTP username is required" .Values.secret.smtp.username}}
+      SMTP_PASSWORD: {{ required "SMTP password is required" .Values.secret.smtp.password}}
+  {{- end }}
+  {{- end }}
+
+configMaps:
+  bewcloud:
+    data:
+      bewcloud.config.ts: |
+        import { Config, PartialDeep } from './lib/types.ts';
+
+        const config: PartialDeep<Config> = {{ .Values.config | toJson }};
+
+        export default config;
+
+persistence:
+  bewcloud:
+    type: configMap
+    identifier: bewcloud
+    advancedMounts:
+      main:
+        main:
+          - path: /app/bewcloud.config.ts
+            readOnly: true
+            subPath: bewcloud.config.ts
+
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        envFrom:
+          {{- if not (hasKey .Values.secret.postgres "existingSecret") }}
+          - secret: postgres
+          {{- else }}
+          - secret: {{ .Values.secret.postgres.existingSecret }}
+          {{- end }}
+          {{- if not (hasKey .Values.secret.jwt "existingSecret") }}
+          - secret: jwt
+          {{- else }}
+          - secret: {{ .Values.secret.jwt.existingSecret }}
+          {{- end }}
+          {{- if not (hasKey .Values.secret.password "existingSecret") }}
+          - secret: password
+          {{- else}}
+          - secret: {{ .Values.secret.password.existingSecret }}
+          {{- end }}
+          {{- if hasKey .Values.secret "mfa" }}
+          {{- if not (hasKey .Values.secret.mfa "existingSecret") }}
+          - secret: mfa
+          {{- else}}
+          - secret: {{ required "MFA existingSecret required" .Values.secret.mfa.existingSecret }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey .Values.secret "oidc" }}
+          {{- if not (hasKey .Values.secret.oidc "existingSecret") }}
+          - secret: oidc
+          {{- else}}
+          - secret: {{ required "OIDC existingSecret required"  .Values.secret.oidc.existingSecret }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey .Values.secret "smtp" }}
+          {{- if not (hasKey .Values.secret.smtp "existingSecret") }}
+          - secret: smtp
+          {{- else}}
+          - secret: {{ required "SMTP existingSecret required"  .Values.secret.smtp.existingSecret }}
+          {{- end }}
+          {{- end }}
+
+service:
+  http:
+    type: ClusterIP
+    controller: main
+    ports:
+      http:
+        port: 8000
+
+{{- end -}}
+{{- $_ := merge .Values (include "bewcloud.preprocess" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{- include "bjw-s.common.loader.all" . }}

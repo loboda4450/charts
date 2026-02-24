@@ -1,0 +1,58 @@
+{{/* Preprocess values and prepare config file */}}
+{{- define "radicale.preprocess" -}}
+
+{{- if .Values.config }}
+configMaps:
+  radicale:
+    data:
+      config: |
+        {{- range $section, $values := .Values.config }}
+        [{{ $section }}]
+        {{- range $key, $value := $values }}
+        {{ $key }} = {{ $value }}
+        {{- end }}
+        {{- end }}
+
+persistence:
+  radicale:
+    type: configMap
+    identifier: radicale
+    advancedMounts:
+      main:
+        main:
+          - path: /config/config
+            readOnly: true
+            subPath: config
+{{- end }}
+
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - SETUID
+              - SETGID
+              - CHOWN
+              - KILL
+
+service:
+  http:
+    type: ClusterIP
+    controller: main
+    ports:
+      http:
+        port: 5232
+
+{{- end -}}
+{{- $_ := merge .Values (include "radicale.preprocess" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{- include "bjw-s.common.loader.all" . }}

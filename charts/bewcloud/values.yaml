@@ -1,0 +1,126 @@
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+#
+
+image:
+# # -- image repository
+  repository: ghcr.io/bewcloud/bewcloud
+# # -- image pull policy
+  pullPolicy: IfNotPresent
+# # -- image tag
+  tag: v4.0.2
+
+secret:
+# # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/.env.sample)
+# # -- Specify required secrets
+# # PostgreSQL options:
+  postgres:
+    {}
+# # A) postgres:
+#     # host: postgres_host
+#     # user: postgres_user
+#     # password: postgres_password
+#     # dbname: postgres_dbname
+#     # port: postgres_port
+# # B) postgres:
+#     # Note, that this secret must contain the following keys: host, user, password, dbname, port
+#     # existingSecret: postgres_existingSecret
+# # JWT options:
+  jwt:
+    {}
+# # A) jwt:
+#     # secret: fake
+# # B) jwt:
+#     # Note, that this secret must contain the following keys: secret
+#     # existingSecret: jwt_existingSecret
+# # Password options:
+  password:
+    {}
+# # A) password:
+#     # salt: fake
+# # B) password:
+#     # Note, that this secret must contain the following keys: salt
+#     # existingSecret: password_existingSecret
+# #
+# # Optional secrets which also enable/disable features:
+# # MFA options:
+# # A) mfa:
+#     # key: fake
+#     # salt: fake
+# # B) mfa:
+#     # Note, that this secret must contain the following keys: key, salt
+#     # existingSecret: mfa_existingSecret
+# # OIDC options:
+# # A) oidc:
+#     # clientId: fake
+#     # clientSecret: fake
+# # B) oidc:
+#     # Note, that this secret must contain the following keys: clientId, clientSecret
+#     # existingSecret: oidc_existingSecret
+# # SMTP options:
+# # A) smtp:
+#     # username: fake
+#     # password: fake
+# # B) smtp:
+#     # Note, that this secret must contain the following keys: username, password
+#     # existingSecret: smtp_existingSecret
+
+config:
+  auth:
+#   # -- Setup authentication
+#   # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/bewcloud.config.sample.ts#L5)
+    {}
+  files:
+#   # -- Setup files sharing options
+#   # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/bewcloud.config.sample.ts#L18)
+    {}
+  core:
+    enabledApps:
+#     # -- Setup enabled apps
+#     # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/bewcloud.config.sample.ts#L24)
+      []
+  visuals:
+#   # -- Setup visuals
+#   # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/bewcloud.config.sample.ts#L26)
+    {}
+  contacts:
+#   # -- Setup contacts support
+#   # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/bewcloud.config.sample.ts#L38)
+    {}
+  calendar:
+#   # -- Setup calendar support
+#   # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/bewcloud.config.sample.ts#L42)
+    {}
+
+persistence:
+  data:
+    accessMode: ReadWriteOnce
+    size: 100Gi
+    storageClass: external
+    advancedMounts:
+      main:
+        main:
+          - path: /app/data-files
+            readOnly: false
+
+ingress:
+  main:
+    enabled: false
+#  # annotations:
+#  #   cert-manager.io/cluster-issuer: letsencrypt-http01
+#  # ingressClassName: nginx-public
+    hosts:
+      - host: []
+#     # - host: bewcloud.example.com
+#     # paths:
+#     # - path: /
+#     #   service:
+#     #      identifier: http
+#     #      port: http
+    tls: []
+#     # - secretName: bewcloud-cert
+#     #   hosts:
+#     #     - bewcloud.example.com
