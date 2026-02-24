@@ -3,7 +3,7 @@ name: bewcloud
 description: A Helm chart for BewCloud
 
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v4.0.2"
 
 dependencies:

@@ -109,6 +109,24 @@ controllers:
           - secret: {{ required "SMTP existingSecret required"  .Values.secret.smtp.existingSecret }}
           {{- end }}
           {{- end }}
+  migrations:
+    type: job
+    annotations:
+      "helm.sh/hook": pre-install,pre-upgrade
+      "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    containers:
+      main:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        command: ["make", "migrate-db"]
+        workingDir: /app
+        envFrom:
+          {{- if not (hasKey .Values.secret.postgres "existingSecret") }}
+          - secret: postgres
+          {{- else }}
+          - secret: {{ .Values.secret.postgres.existingSecret }}
+          {{- end }}
+
 
 service:
   http:
