@@ -13,6 +13,11 @@ image:
 # # -- image tag
   tag: v4.0.2
 
+radicale:
+# # -- Enable Radicale calendar server
+# # [[ref]](https://github.com/loboda4450/charts/blob/main/charts/radicale/values.yaml)
+  enabled: false
+
 secret:
 # # [[ref]](https://github.com/bewcloud/bewcloud/blob/v4.0.2/.env.sample)
 # # -- Specify required secrets
