@@ -11,7 +11,7 @@ image:
 # # -- image pull policy
   pullPolicy: IfNotPresent
 # # -- image tag
-  tag: 3.6.0.0
+  tag: 3.6.1.0
 
 config:
   {}
