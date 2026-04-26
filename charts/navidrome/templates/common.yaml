@@ -32,11 +32,19 @@ secrets:
 configMaps:
   {{- if .Values.config }}
   config:
+    suffix: config
     data:
       navidrome.toml: |-
         {{- include "navidrome.validateSensitiveConfig" . }}
         {{- include "navidrome.validateNDConfig" . }}
         {{- .Values.config | toToml | nindent 8 }}
+  {{- end }}
+
+persistence:
+  {{- if .Values.config }}
+  config:
+    type: configMap
+    identifier: config
   {{- end }}
 
 service:
