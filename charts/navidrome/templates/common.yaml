@@ -1,0 +1,101 @@
+{{/* Preprocess values and prepare config file */}}
+{{- define "navidrome.preprocess" -}}
+
+{{ if .Values.secret }}
+secrets:
+  {{- if and (hasKey (.Values.secret) "lastfm") (not (empty .Values.secret.lastfm)) }}
+  {{- if .Values.secret.lastfm.existing_secret }}
+    {{- if or .Values.secret.lastfm.api_key .Values.secret.lastfm.secret }}
+      {{- fail "Cannot provide LastFM api_key/secret when lastfm.existing_secret is set." }}
+    {{- end }}
+  {{- else }}
+  lastfm:
+    stringData:
+      ND_LASTFM_APIKEY: {{ required "LastFM API Key is required if LastFM is enabled" .Values.secret.lastfm.api_key }}
+      ND_LASTFM_SECRET: {{ required "LastFM API Secret is required if LastFM is enabled" .Values.secret.lastfm.secret }}
+  {{- end }}
+  {{- end }}
+
+  {{- if and (hasKey (.Values.secret) "prometheus") (not (empty .Values.secret.prometheus)) }}
+  {{- if .Values.secret.prometheus.existing_secret }}
+    {{- if .Values.secret.prometheus.password }}
+      {{- fail "Cannot provide Prometheus password when existing_secret is set." }}
+    {{- end }}
+  {{- else }}
+  prometheus:
+    stringData:
+      ND_PROMETHEUS_PASSWORD: {{ required "Prometheus password is required when set" .Values.secret.prometheus.password }}
+  {{- end }}
+  {{- end }}
+{{ end }}
+
+configMaps:
+  {{- if .Values.config }}
+  config:
+    data:
+      navidrome.toml: |-
+        {{- include "navidrome.validateSensitiveConfig" . }}
+        {{- include "navidrome.validateNDConfig" . }}
+        {{- .Values.config | toToml | nindent 8 }}
+  {{- end }}
+
+service:
+  http:
+    type: ClusterIP
+    controller: main
+    ports:
+      http:
+        {{- if .Values.config }}
+        port: {{ .Values.config.Port | default 4533 }}
+        {{- else }}
+        port: 4533
+        {{- end }}
+
+controllers:
+  main:
+    type: statefulset
+    replicas: {{ .Values.replicas | default 1 }}
+    containers:
+      main:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        env:
+          {{ if .Values.secret }}
+          {{- if and (hasKey (.Values.secret) "lastfm") (not (empty .Values.secret.lastfm)) }}
+          {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.lastfm "name" "LastFM") }}
+          - name: lastfm
+            secretRef:
+            {{- if .Values.secret.lastfm.existing_secret }}
+              name: {{ .Values.secret.lastfm.existing_secret }}
+            {{- else }}
+              identifier: lastfm
+            {{- end }}
+          {{- end }}
+
+          {{- if and (hasKey (.Values.secret) "spotify") (not (empty .Values.secret.spotify)) }}
+          {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.spotify "name" "Spotify") }}
+          - name: spotify
+            secretRef:
+              {{- if .Values.secret.spotify.existing_secret }}
+              name: {{ .Values.secret.spotify.existing_secret }}
+              {{- else }}
+              identifier: spotify
+              {{- end }}
+          {{- end }}
+
+          {{- if and (hasKey (.Values.secret) "prometheus") (not (empty .Values.secret.prometheus)) }}
+          {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.prometheus "name" "Prometheus") }}
+          - name: prometheus
+            secretRef:
+              {{- if .Values.secret.prometheus.existing_secret }}
+              name: {{ .Values.secret.prometheus.existing_secret }}
+              {{- else }}
+              identifier: prometheus
+              {{- end }}
+          {{- end }}
+          {{- end }}
+{{ end }}
+{{- $_ := merge .Values (include "navidrome.preprocess" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{- include "bjw-s.common.loader.all" . }}

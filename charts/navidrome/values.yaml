@@ -1,0 +1,97 @@
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+#
+
+image:
+# # -- image repository
+  repository: ghcr.io/navidrome/navidrome
+# # -- image pull policy
+  pullPolicy: IfNotPresent
+# # -- image tag
+  tag: 0.61.2
+
+secret:
+  {}
+# # -- Specify these secrets for integrations enablement
+# # LastFM Options:
+# # A) Not to pass anything if you want to disable LastFM integration
+# # -- requires setting up `LastFM.Enabled: true` in config to take effect
+# # [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#advanced-configuration)
+# # B) lastfm:
+# #      api_key: super_secret_api_key
+# #      secret: super_secret_secret
+# # C) lastfm:
+# #      existing_secret: super_secret_existing_lastfm_secret
+# # Prometheus Options:
+# # A) Not to pass anything if you want to disable Prometheus authentication
+# # -- requires setting up `Prometheus.Enabled: true` in config to take effect
+# # [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#advanced-configuration)
+# # B) prometheus:
+# #      password: super_secret_password
+# # C) prometheus:
+# #      existing_secret: super_secret_existing_prometheus_secret
+
+
+config:
+# # -- Config have to include only "In config file" references, not environmental variables
+# #    [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#available-options)
+  MusicFolder: /music
+  DataFolder: /data
+  CacheFolder: /cache
+
+persistence:
+# # -- Further configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L728)
+  music:
+    accessMode: ReadWriteOnce
+    size: 10Ti
+    globalMounts:
+      - path: "/music"
+        readonly: true
+  data:
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    globalMounts:
+      - path: "/data"
+        readonly: false
+  cache:
+    type: emptyDir
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    globalMounts:
+      - path: "/cache"
+        readonly: false
+
+#   # -- Example backup configuration
+#   #    include Backup.Path, Backup.Schedule and Backup.Count in config
+#   #    [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#advanced-configuration)
+#   # backup:
+#   #    accessMode: ReadWriteOnce
+#   #    size: 10Gi
+#   #    globalMounts:
+#   #      - path: "/backup"
+#   #        readonly: false
+
+
+ingress:
+# # -- Further ingress configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L585)
+  main:
+    enabled: false
+#   # ingressClassName: nginx-public
+#   # annotations:
+#   #   cert-manager.io/cluster-issuer: letsencrypt-http01
+    hosts: []
+#   #   - host: navidrome.example.com
+#   #     paths:
+#   #       - path: /
+#   #         service:
+#   #           identifier: http
+#   #           port: http
+    tls: []
+#   #   - secretName: navidrome-cert
+#   #     hosts:
+#   #       - navidrome.example.com
