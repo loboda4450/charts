@@ -73,6 +73,10 @@ controllers:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         env:
+          - name: ND_MUSICFOLDER
+            value: ""
+          - name: ND_DATAFOLDER
+            value: ""
           {{ if .Values.secret }}
           {{- if and (hasKey (.Values.secret) "lastfm") (not (empty .Values.secret.lastfm)) }}
           {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.lastfm "name" "LastFM") }}

@@ -42,6 +42,7 @@ config:
   DataFolder: /data
   CacheFolder: /cache
 
+
 persistence:
 # # -- Further configuration options are available here
 # #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L728)
