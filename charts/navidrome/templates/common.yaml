@@ -34,7 +34,7 @@ configMaps:
   config:
     suffix: config
     data:
-      navidrome.toml: |-
+      navidrome.toml: |
         {{- include "navidrome.validateSensitiveConfig" . }}
         {{- include "navidrome.validateNDConfig" . }}
         {{- .Values.config | toToml | nindent 8 }}
