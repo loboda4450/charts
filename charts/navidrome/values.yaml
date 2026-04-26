@@ -36,7 +36,7 @@ secret:
 
 
 config:
-# # -- Config have to include only "In config file" references, not environmental variables
+# # -- Config has to include only "In config file" references, not environmental variables
 # #    [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#available-options)
   MusicFolder: /music
   DataFolder: /data
@@ -66,7 +66,7 @@ persistence:
         readonly: false
 
 #   # -- Example backup configuration
-#   #    include Backup.Path, Backup.Schedule and Backup.Count in config
+#   #    includes Backup.Path, Backup.Schedule and Backup.Count in config
 #   #    [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#advanced-configuration)
 #   # backup:
 #   #    accessMode: ReadWriteOnce
