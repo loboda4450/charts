@@ -45,6 +45,11 @@ persistence:
   config:
     type: configMap
     identifier: config
+    advancedMounts:
+      main:
+        main:
+          - path: /data/navidrome.toml
+            subPath: navidrome.toml
   {{- end }}
 
 service:
