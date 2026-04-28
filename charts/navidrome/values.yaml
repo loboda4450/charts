@@ -34,11 +34,17 @@ secret:
 # # C) prometheus:
 # #      existing_secret: super_secret_existing_prometheus_secret
 
+
+podSecurityContext:
+  fsGroup: 65534
+  fsGroupChangePolicy: OnRootMismatch
+
 securityContext:
   runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
   runAsUser: 65534
   runAsGroup: 65534
-  fsGroup: 65534
 
 
 config:
