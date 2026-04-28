@@ -34,6 +34,15 @@ secret:
 # # C) prometheus:
 # #      existing_secret: super_secret_existing_prometheus_secret
 
+securityContext:
+    {}
+# # -- Further configuration options are available here
+# #    [[ref]](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+# # runAsNonRoot: true
+# # runAsUser: 65534
+# # runAsGroup: 65534
+# # fsGroup: 65534
+
 
 config:
 # # -- Config has to include only "In config file" references, not environmental variables

@@ -68,6 +68,16 @@ controllers:
   main:
     type: statefulset
     replicas: {{ .Values.replicas | default 1 }}
+    defaultContainerOptions:
+      securityContext:
+        {{- if .Values.securityContext }}
+        {{- toYaml .Values.securityContext | nindent 10 }}
+        {{- else }}
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        {{- end }}
     containers:
       main:
         image:
