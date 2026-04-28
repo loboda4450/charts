@@ -94,16 +94,6 @@ controllers:
             {{- end }}
           {{- end }}
 
-          {{- if and (hasKey (.Values.secret) "spotify") (not (empty .Values.secret.spotify)) }}
-          {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.spotify "name" "Spotify") }}
-          - name: spotify
-            secretRef:
-              {{- if .Values.secret.spotify.existing_secret }}
-              name: {{ .Values.secret.spotify.existing_secret }}
-              {{- else }}
-              identifier: spotify
-              {{- end }}
-          {{- end }}
 
           {{- if and (hasKey (.Values.secret) "prometheus") (not (empty .Values.secret.prometheus)) }}
           {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.prometheus "name" "Prometheus") }}

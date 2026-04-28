@@ -2,7 +2,7 @@
 Check for sensitive keys in .Values.config and fail if found
 */}}
 {{- define "navidrome.validateSensitiveConfig" -}}
-  {{- $sensitiveKeys := list "LastFM.ApiKey" "LastFM.Secret" "Spotify.ID" "Spotify.Secret" "Prometheus.Password" -}}
+  {{- $sensitiveKeys := list "LastFM.ApiKey" "LastFM.Secret" "Prometheus.Password" -}}
   {{- range $key := $sensitiveKeys -}}
     {{- if hasKey $.Values.config $key -}}
       {{- fail (printf "\n\nThe key '%s' was found in Values.config.\nPlease remove it and use a dedicated Secret to store this sensitive data." $key) -}}
