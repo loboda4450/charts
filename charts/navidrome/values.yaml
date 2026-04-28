@@ -51,32 +51,32 @@ persistence:
     size: 10Gi
 #   # -- If you want to use another mount point than /music, you can set it in config
 #   #    and use advancedMounts to mount it to the right place in the container
-#   # advancedMounts:
-#   #  main:
-#   #    main:
-#   #      - path: "/music"
-#   #        readonly: true
+    advancedMounts:
+      main:
+        main:
+          - path: "/music"
+            readOnly: true
   data:
     accessMode: ReadWriteOnce
     size: 1Gi
 #   # -- If you want to use another mount point than /data, you can set it in config
 #   #    and use advancedMounts to mount it to the right place in the container
-#   # advancedMounts:
-#   #  main:
-#   #    main:
-#   #      - path: "/data"
-#   #        readonly: false
+    advancedMounts:
+      main:
+        main:
+          - path: "/data"
+            readOnly: false
   cache:
     type: emptyDir
     accessMode: ReadWriteOnce
     size: 1Gi
 #   # -- If you want to use another mount point than /cache, you can set it in config
 #   #    and use advancedMounts to mount it to the right place in the container
-#   # advancedMounts:
-#   #  main:
-#   #    main:
-#   #      - path: "/cache"
-#   #        readonly: false
+    advancedMounts:
+      main:
+        main:
+          - path: "/cache"
+            readOnly: false
 
 #   # -- Example backup configuration
 #   #    includes Backup.Path, Backup.Schedule and Backup.Count in config
