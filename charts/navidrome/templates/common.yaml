@@ -70,15 +70,19 @@ controllers:
   main:
     type: statefulset
     replicas: {{ .Values.replicas | default 1 }}
-    defaultContainerOptions:
-      {{- if .Values.securityContext }}
+    pod:
+      {{- with .Values.podSecurityContext }}
       securityContext:
-        {{- toYaml .Values.securityContext | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
     containers:
       main:
         image:
           {{- toYaml .Values.image | nindent 10 }}
+        {{- with .Values.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         env:
           - name: ND_MUSICFOLDER
             value: ""
