@@ -92,7 +92,7 @@ controllers:
             {{- if .Values.secret.lastfm.existing_secret }}
               name: {{ .Values.secret.lastfm.existing_secret }}
             {{- else }}
-              identifier: lastfm
+              identifier: "{{ .Release.Name }}-lastfm"
             {{- end }}
           {{- end }}
 
@@ -104,7 +104,7 @@ controllers:
               {{- if .Values.secret.prometheus.existing_secret }}
               name: {{ .Values.secret.prometheus.existing_secret }}
               {{- else }}
-              identifier: prometheus
+              identifier: "{{ .Release.Name }}-prometheus"
               {{- end }}
           {{- end }}
           {{- end }}
