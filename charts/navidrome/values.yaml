@@ -42,7 +42,7 @@ podSecurityContext:
 securityContext:
   runAsNonRoot: true
   allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
+  # readOnlyRootFilesystem: true  # migrations fail when rootfs is read-only
   runAsUser: 65534
   runAsGroup: 65534
 
