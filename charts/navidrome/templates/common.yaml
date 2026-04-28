@@ -10,6 +10,7 @@ secrets:
     {{- end }}
   {{- else }}
   lastfm:
+    suffix: lastfm
     stringData:
       ND_LASTFM_APIKEY: {{ required "LastFM API Key is required if LastFM is enabled" .Values.secret.lastfm.api_key }}
       ND_LASTFM_SECRET: {{ required "LastFM API Secret is required if LastFM is enabled" .Values.secret.lastfm.secret }}
@@ -23,6 +24,7 @@ secrets:
     {{- end }}
   {{- else }}
   prometheus:
+    suffix: prometheus
     stringData:
       ND_PROMETHEUS_PASSWORD: {{ required "Prometheus password is required when set" .Values.secret.prometheus.password }}
   {{- end }}
