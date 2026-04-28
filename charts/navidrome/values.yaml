@@ -48,7 +48,7 @@ persistence:
 # #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L728)
   music:
     accessMode: ReadWriteOnce
-    size: 10Ti
+    size: 10Gi
 #   # -- If you want to use another mount point than /music, you can set it in config
 #   #    and use advancedMounts to mount it to the right place in the container
 #   # advancedMounts:
