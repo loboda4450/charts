@@ -1,13 +1,5 @@
 {{/* Preprocess values and prepare config file */}}
 {{- define "feishin.preprocess" -}}
-service:
-  http:
-    type: ClusterIP
-    controller: main
-    ports:
-      http:
-        port: 9180
-
 controllers:
   main:
     replicas: {{ .Values.replicas }}

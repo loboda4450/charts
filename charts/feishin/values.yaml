@@ -21,6 +21,14 @@ env:
 # # SERVER_TYPE: navidrome
 # # SERVER_URL: https://navidrome.example.com
 
+service:
+  http:
+    type: ClusterIP
+    controller: main
+    ports:
+      http:
+        port: 9180
+
 ingress:
 # # -- Further ingress configuration options are available here
 # #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L585)

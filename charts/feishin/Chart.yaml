@@ -1,8 +1,8 @@
 apiVersion: v2
-name: Feishin
+name: feishin
 description: A Helm chart for Feishin application
 type: application
-version: 0.1.9
+version: 0.1.0
 appVersion: "1.11.0"
 dependencies:
   - name: common
