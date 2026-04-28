@@ -1,0 +1,60 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":semanticCommits",
+    ":semanticCommitScopeDisabled",
+    "docker:enableMajor",
+    "customManagers:helmChartYamlAppVersions",
+    ":disableRateLimiting",
+    ":ignoreUnstable",
+    ":separateMultipleMajorReleases",
+    ":updateNotScheduled"
+  ],
+  "packageRules": [
+    {
+      "description": "Treat every chart as separate group with separate scope and branch prefix",
+      "matchFileNames": [
+        "charts/*/*"
+      ],
+      "additionalBranchPrefix": "{{parentDir}}-",
+      "semanticCommitScope": "{{parentDir}}"
+    },
+    {
+      "description": "Use correct versioning scheme for JuniorJPDJ's containers",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/juniorjpdj/containers/**"
+      ],
+      "allowedVersions": "/^[\\d.]+-r\\d+$/",
+      "versioning": "loose"
+    },
+    {
+      "description": "Disable digest pinning for regex managers in Chart.yaml used for appVersion upgrading",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchFileNames": [
+        "charts/*/Chart.yaml"
+      ],
+      "pinDigests": false
+    },
+    {
+      "description": "Bump helm chart versions by a patch. This can be removed when https://github.com/renovatebot/renovate/issues/8231 is implemented and enabled.",
+      "matchFileNames": [
+        "charts/*/*"
+      ],
+      "postUpgradeTasks": {
+        "commands": [
+          "bash scripts/bump-chart-version.sh '{{{parentDir}}}'"
+        ],
+        "fileFilters": [
+          "charts/*/*"
+        ],
+        "executionMode": "branch"
+      }
+    }
+  ]
+}

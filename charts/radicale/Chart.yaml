@@ -4,6 +4,7 @@ description: A Helm chart for Radicale
 
 type: application
 version: 0.1.2
+# renovate: image=tomsquest/docker-radicale
 appVersion: "3.7.1.0"
 
 dependencies:
