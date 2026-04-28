@@ -1,0 +1,42 @@
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+#
+
+image:
+# # -- image repository
+  repository: ghcr.io/jeffvli/feishin
+# # -- image pull policy
+  pullPolicy: IfNotPresent
+# # -- image tag
+  tag: 1.11.0
+
+env:
+  {}
+# # -- Example configuration for Navidrome
+# # SERVER_NAME: Navidrome
+# # SERVER_LOCK: true
+# # SERVER_TYPE: navidrome
+# # SERVER_URL: https://navidrome.example.com
+
+ingress:
+# # -- Further ingress configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L585)
+  main:
+    enabled: false
+#   # ingressClassName: nginx-public
+#   # annotations:
+#   #   cert-manager.io/cluster-issuer: letsencrypt-http01
+    hosts: []
+#   #   - host: feishin.example.com
+#   #     paths:
+#   #       - path: /
+#   #         service:
+#   #           identifier: http
+#   #           port: http
+    tls: []
+#   #   - secretName: feishin-cert
+#   #     hosts:
+#   #       - feishin.example.com
