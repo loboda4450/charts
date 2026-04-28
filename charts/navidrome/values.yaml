@@ -84,9 +84,11 @@ persistence:
 #   # backup:
 #   #    accessMode: ReadWriteOnce
 #   #    size: 10Gi
-#   #    globalMounts:
-#   #      - path: "/backup"
-#   #        readonly: false
+#   #    advancedMounts:
+#   #      main:
+#   #        main:
+#   #          - path: "/backup"
+#   #            readOnly: false
 
 
 ingress:
