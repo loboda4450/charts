@@ -88,7 +88,8 @@ controllers:
             value: ""
           - name: ND_DATAFOLDER
             value: ""
-          {{ if .Values.secret }}
+        {{ if .Values.secret }}
+        envFrom:
           {{- if and (hasKey (.Values.secret) "lastfm") (not (empty .Values.secret.lastfm)) }}
           {{- include "navidrome.validateSecret" (dict "context" . "service" .Values.secret.lastfm "name" "LastFM") }}
           - name: lastfm
@@ -96,7 +97,7 @@ controllers:
             {{- if .Values.secret.lastfm.existing_secret }}
               name: {{ .Values.secret.lastfm.existing_secret }}
             {{- else }}
-              identifier: "{{ .Release.Name }}-lastfm"
+              identifier: lastfm
             {{- end }}
           {{- end }}
 
@@ -108,10 +109,10 @@ controllers:
               {{- if .Values.secret.prometheus.existing_secret }}
               name: {{ .Values.secret.prometheus.existing_secret }}
               {{- else }}
-              identifier: "{{ .Release.Name }}-prometheus"
+              identifier: prometheus
               {{- end }}
           {{- end }}
-          {{- end }}
+        {{- end }}
 {{ end }}
 {{- $_ := merge .Values (include "navidrome.preprocess" . | fromYaml) -}}
 
