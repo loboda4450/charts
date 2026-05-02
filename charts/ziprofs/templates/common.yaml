@@ -23,6 +23,7 @@ controllers:
         securityContext:
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: true
+          privileged: true
 
 {{- end -}}
 {{- $_ := merge .Values (include "ziprofs.preprocess" . | fromYaml) -}}

@@ -13,7 +13,6 @@ image:
 # # -- image tag
   tag: latest
 
-
 args:
 # -- Override default command(s) to run
   - /app/root
@@ -43,3 +42,4 @@ persistence:
         main:
           - path: /app/mnt
             readOnly: false
+            mountPropagation: Bidirectional
