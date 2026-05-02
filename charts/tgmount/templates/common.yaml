@@ -1,0 +1,32 @@
+{{/* Preprocess values and prepare config file */}}
+{{- define "tgmount.preprocess" -}}
+
+controllers:
+  main:
+    type: statefulset
+    replicas: {{ .Values.replicas | default 1 }}
+    pod:
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    defaultContainerOptions:
+      {{- with .Values.args }}
+      args:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+    containers:
+      main:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: true
+          privileged: true
+
+{{- end -}}
+{{- $_ := merge .Values (include "tgmount.preprocess" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{- include "bjw-s.common.loader.all" . }}
