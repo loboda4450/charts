@@ -14,7 +14,7 @@ image:
   tag: latest
 
 
-command:
+args:
 # -- Override default command(s) to run
   - /app/root
   - /app/mnt
