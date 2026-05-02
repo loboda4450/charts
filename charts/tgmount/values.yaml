@@ -17,6 +17,14 @@ args:
 # -- Override default command(s) to run
   []
 
+secret:
+  {}
+# # TGAPP Options:
+# # B) tgapp:
+# #      tgapp: super_secret_tgapp_token
+# # C) tgapp:
+# #      existing_secret: super_secret_existing_tgapp_token_secret
+
 persistence:
 # # -- Output mount, which will be used to mount the chat to.
   chat:

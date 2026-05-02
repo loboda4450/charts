@@ -3,7 +3,7 @@ name: tgmount
 description: A Helm chart for tgmount
 
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "latest"
 
 dependencies:

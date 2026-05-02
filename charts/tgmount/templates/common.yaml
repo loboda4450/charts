@@ -1,5 +1,18 @@
 {{/* Preprocess values and prepare config file */}}
 {{- define "tgmount.preprocess" -}}
+secrets:
+  {{- if and (hasKey (.Values.secret) "tgapp") (not (empty .Values.secret.tgapp)) }}
+  {{- if .Values.secret.tgapp.existing_secret }}
+    {{- if .Values.secret.tgapp.tgapp }}
+      {{- fail "Cannot provide TGAPP tgapp.existing_secret is set." }}
+    {{- end }}
+  {{- else }}
+  tgapp:
+    suffix: tgapp
+    stringData:
+      TGAPP: {{ required "TGAPP secret is required" .Values.secret.tgapp.tgapp }}
+  {{- end }}
+  {{- end }}
 
 controllers:
   main:
@@ -24,6 +37,16 @@ controllers:
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: true
           privileged: true
+        envFrom:
+          {{- if and (hasKey (.Values.secret) "tgapp") (not (empty .Values.secret.tgapp)) }}
+          - name: tgapp
+            secretRef:
+            {{- if .Values.secret.tgapp.existing_secret }}
+              name: {{ .Values.secret.tgapp.existing_secret }}
+            {{- else }}
+              identifier: tgapp
+            {{- end }}
+          {{- end }}
 
 {{- end -}}
 {{- $_ := merge .Values (include "tgmount.preprocess" . | fromYaml) -}}
