@@ -31,7 +31,7 @@ persistence:
       main:
         main:
           - path: /app/root
-            readOnly: false
+            readOnly: true
 
 # # -- Output mount, which will be used to mount the destination directory (e.g. ZipROFSed input)
   output:
