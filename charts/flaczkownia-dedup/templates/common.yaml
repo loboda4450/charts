@@ -22,7 +22,7 @@ controllers:
         - {{ .Values.connector.host }}
         - --port
         - {{ .Values.connector.port }}
-        {{- if not (or (eq .Values.connector.viewMode "") (empty .Values.connector.viewMode)) }}
+        {{- if not (empty .Values.connector.viewMode) }}
         - --view-dir
         - {{ .Values.connector.viewDir }}
         - --db-prefix
