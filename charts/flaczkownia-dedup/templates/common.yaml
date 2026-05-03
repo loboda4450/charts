@@ -75,7 +75,7 @@ controllers:
 persistence:
 # # -- Mount to store the database
   database:
-    enable: true
+    enabled: {{ contains "sqlite" .Values.database }}
     accessMode: ReadWriteOnce
     size: 1Gi
     advancedMounts:
