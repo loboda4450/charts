@@ -45,8 +45,7 @@ controllers:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: true
-          privileged: true
+          allowPrivilegeEscalation: false
 
   dedup:
     type: deployment
@@ -64,8 +63,7 @@ controllers:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: true
-          privileged: true
+          allowPrivilegeEscalation: false
 
 persistence:
 # # -- Mount to store the database
