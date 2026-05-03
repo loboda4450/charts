@@ -14,8 +14,8 @@ controllers:
     replicas: {{ .Values.connector.replicas | default 1 }}
     defaultContainerOptions:
       args:
-        - --basedir
-        - {{ .Values.connector.basedir }}
+        - --base-dir
+        - {{ .Values.connector.baseDir }}
         - --db
         - {{ .Values.database }}
         - --host
