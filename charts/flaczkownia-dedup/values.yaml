@@ -1,0 +1,40 @@
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+#
+
+image:
+# # -- image repository
+  repository: ghcr.io/fumr/flaczkownia-dedup
+# # -- image pull policy
+  pullPolicy: IfNotPresent
+# # -- image tag
+  tag: latest
+
+# # -- mode of deduplicated view: copy|symlink|""
+mode: copy
+# # -- database URL (e.g. sqlite or pgsql path)
+database: "sqlite:////app/data/dedup.sqlite3"
+
+connector:
+# # -- port to listen on
+  port: 9999
+# # -- path prepended to jobs added to queue from webhook
+  basedir: ""
+# # -- address to listen on
+  host: 0.0.0.0
+# # -- directory to create view in
+  viewDir: /app/data/deduped
+# # -- prefix to strip from DB paths before symlinking
+  dbPrefix: data/music
+# # -- relative path from viewDir to source root (symlink target)
+# # sourceRelativePath: ./ziprofs/mnt
+# # -- path where original files are stored (copy source)
+# # sourcePath: /app/data/music
+
+dedup:
+  replicas: 1
+# # -- webhook URL to send jobs to
+# # webhookUrl: ""

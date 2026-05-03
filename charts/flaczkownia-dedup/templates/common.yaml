@@ -1,0 +1,117 @@
+{{/* Preprocess values and prepare config file */}}
+{{- define "flaczkownia-dedup.preprocess" -}}
+service:
+  http:
+    type: ClusterIP
+    controller: connector
+    ports:
+      http:
+        port: {{ .Values.connector.port }}
+
+controllers:
+  connector:
+    type: statefulset
+    replicas: {{ .Values.connector.replicas | default 1 }}
+    defaultContainerOptions:
+      args:
+        - --basedir
+        - {{ .Values.connector.basedir }}
+        - --db
+        - {{ .Values.database }}
+        - --host
+        - {{ .Values.connector.host }}
+        - --port
+        - {{ .Values.connector.port }}
+        - --view-dir
+        - {{ .Values.connector.viewDir }}
+        {{- if eq .Values.mode "symlink" }}
+        - --source-relative-path
+        - {{ required "sourceRelativePath is required with symlink mode" .Values.connector.sourceRelativePath }}
+        {{- else if eq .Values.mode "copy" }}
+        - --source-path
+        - {{ required "sourcePath is required with copy mode" .Values.connector.sourcePath }}
+        {{- end }}
+        - --db-prefix
+        - {{ .Values.connector.dbPrefix }}
+      command:
+        - python
+        - connector.py
+
+    containers:
+      connector:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: true
+          privileged: true
+
+  dedup:
+    type: deployment
+    replicas: {{ .Values.dedup.replicas | default 1 }}
+    defaultContainerOptions:
+      args:
+        - --db
+        - {{ .Values.database }}
+        - --webhook-url
+        - {{ .Values.webhookUrl | default (printf "http://connector.%s.svc:%d/api/v1/dedup_processed_file_webhook" .Release.Namespace (int .Values.connector.port)) }}
+
+    containers:
+      dedup:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: true
+          privileged: true
+
+persistence:
+# # -- Mount to store the database
+  database:
+    enable: true
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    storageClass: external
+    advancedMounts:
+      connector:
+        connector:
+          - path: /app/data
+            readOnly: false
+      dedup:
+        dedup:
+          - path: /app/data
+            readOnly: false
+
+  ziprofs:
+# # -- Dedup input directory (ziprofs output)
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    storageClass: external
+    advancedMounts:
+      dedup:
+        dedup:
+          - path: /app/data/music
+            readOnly: true
+      {{- if eq .Values.mode "copy" }}
+      connector:
+        connector:
+          - path: /app/data/music
+            readOnly: true
+      {{- end }}
+
+  deduplicated:
+# # -- Deduplicated view directory
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    storageClass: external
+    advancedMounts:
+      connector:
+        connector:
+          - path: /app/data/deduped
+            readOnly: false
+
+{{- end -}}
+{{- $_ := merge .Values (include "flaczkownia-dedup.preprocess" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{- include "bjw-s.common.loader.all" . }}
