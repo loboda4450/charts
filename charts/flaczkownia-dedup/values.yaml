@@ -29,10 +29,10 @@ connector:
   viewDir: /app/data/deduped
 # # -- prefix to strip from DB paths before symlinking
   dbPrefix: data/music
+# # -- path where original files are stored (copy source)
+  sourcePath: /app/data/music
 # # -- relative path from viewDir to source root (symlink target)
 # # sourceRelativePath: ../ziprofs/mnt
-# # -- path where original files are stored (copy source)
-# # sourcePath: /app/data/music
 
 dedup:
   replicas: 1
