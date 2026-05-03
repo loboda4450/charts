@@ -15,7 +15,7 @@ controllers:
     defaultContainerOptions:
       args:
         - --base-dir
-        - {{ .Values.connector.baseDir | quote}}
+        - {{ .Values.connector.baseDir | quote }}
         - --db
         - {{ .Values.database | quote }}
         - --host
