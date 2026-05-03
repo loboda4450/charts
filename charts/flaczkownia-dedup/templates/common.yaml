@@ -22,8 +22,12 @@ controllers:
         - {{ .Values.connector.host }}
         - --port
         - {{ .Values.connector.port }}
+        {{- if not (or (eq .Values.connector.viewMode "") (empty .Values.connector.viewMode)) }}
         - --view-dir
         - {{ .Values.connector.viewDir }}
+        - --db-prefix
+        - {{ .Values.connector.dbPrefix }}
+        {{- end }}
         {{- if eq .Values.connector.viewMode "symlink" }}
         - --source-relative-path
         - {{ required "sourceRelativePath is required with symlink view mode" .Values.connector.sourceRelativePath }}
@@ -31,8 +35,6 @@ controllers:
         - --source-path
         - {{ required "sourcePath is required with copy view mode" .Values.connector.sourcePath }}
         {{- end }}
-        - --db-prefix
-        - {{ .Values.connector.dbPrefix }}
       command:
         - python
         - connector.py
