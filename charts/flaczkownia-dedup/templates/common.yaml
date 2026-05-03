@@ -15,25 +15,25 @@ controllers:
     defaultContainerOptions:
       args:
         - --base-dir
-        - {{ .Values.connector.baseDir }}
+        - {{ .Values.connector.baseDir | quote}}
         - --db
-        - {{ .Values.database }}
+        - {{ .Values.database | quote }}
         - --host
-        - {{ .Values.connector.host }}
+        - {{ .Values.connector.host | quote }}
         - --port
-        - {{ .Values.connector.port }}
+        - {{ .Values.connector.port | quote }}
         {{- if not (empty .Values.connector.viewMode) }}
         - --view-dir
-        - {{ .Values.connector.viewDir }}
+        - {{ .Values.connector.viewDir | quote }}
         - --db-prefix
-        - {{ .Values.connector.dbPrefix }}
+        - {{ .Values.connector.dbPrefix | quote }}
         {{- end }}
         {{- if eq .Values.connector.viewMode "symlink" }}
         - --source-relative-path
-        - {{ required "sourceRelativePath is required with symlink view mode" .Values.connector.sourceRelativePath }}
+        - {{ required "sourceRelativePath is required with symlink view mode" .Values.connector.sourceRelativePath | quote }}
         {{- else if eq .Values.connector.viewMode "copy" }}
         - --source-path
-        - {{ required "sourcePath is required with copy view mode" .Values.connector.sourcePath }}
+        - {{ required "sourcePath is required with copy view mode" .Values.connector.sourcePath | quote }}
         {{- end }}
       command:
         - python
@@ -53,14 +53,14 @@ controllers:
     defaultContainerOptions:
       args:
         - --db
-        - {{ .Values.database }}
+        - {{ .Values.database | quote }}
         {{- if or (empty .Values.connector.webhookUrls) (eq (len .Values.connector.webhookUrls) 0)}}
         - --webhook-url
-        - http://connector.{{ .Release.Namespace }}.svc:{{ .Values.connector.port }}/api/v1/dedup_processed_file_webhook
+        - {{ printf "http://connector.%s.svc:%d/api/v1/dedup_processed_file_webhook" .Release.Namespace (int .Values.connector.port) | quote}}
         {{- else }}
         {{- range .Values.connector.webhookUrls }}
         - --webhook-url
-        - {{ . }}
+        - {{ quote . }}
         {{- end }}
         {{- end }}
 
