@@ -14,7 +14,7 @@ image:
   tag: latest
 
 # # -- mode of deduplicated view: copy|symlink|""
-mode: copy
+viewMode: copy
 # # -- database URL (e.g. sqlite or pgsql path)
 database: "sqlite:////app/data/dedup.sqlite3"
 
