@@ -54,8 +54,15 @@ controllers:
       args:
         - --db
         - {{ .Values.database }}
+        {{- if or (empty .Values.connector.webhookUrls) (eq (len .Values.connector.webhookUrls) 0)}}
         - --webhook-url
-        - {{ .Values.webhookUrl | default (printf "http://connector.%s.svc:%d/api/v1/dedup_processed_file_webhook" .Release.Namespace (int .Values.connector.port)) }}
+        - http://connector.{{ .Release.Namespace }}.svc:{{ .Values.connector.port }}/api/v1/dedup_processed_file_webhook
+        {{- else }}
+        {{- range .Values.connector.webhookUrls }}
+        - --webhook-url
+        - {{ . }}
+        {{- end }}
+        {{- end }}
 
     containers:
       dedup:

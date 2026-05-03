@@ -32,6 +32,8 @@ connector:
   sourcePath: /app/data/music
 # # -- relative path from viewDir to source root (symlink target)
 # # sourceRelativePath: ../ziprofs/mnt
+# # -- webhook URLs to send jobs to
+# # webhookUrls: []
 
 dedup:
   image:
@@ -42,5 +44,4 @@ dedup:
     # # -- image tag
     tag: latest
   replicas: 1
-# # -- webhook URL to send jobs to
-# # webhookUrl: ""
+
