@@ -22,7 +22,7 @@ connector:
 # # -- port to listen on
   port: 9999
 # # -- path prepended to jobs added to queue from webhook
-  basedir: ""
+  basedir: data/music/flaczkownia
 # # -- address to listen on
   host: 0.0.0.0
 # # -- directory to create view in
@@ -30,7 +30,7 @@ connector:
 # # -- prefix to strip from DB paths before symlinking
   dbPrefix: data/music
 # # -- relative path from viewDir to source root (symlink target)
-# # sourceRelativePath: ./ziprofs/mnt
+# # sourceRelativePath: ../ziprofs/mnt
 # # -- path where original files are stored (copy source)
 # # sourcePath: /app/data/music
 
