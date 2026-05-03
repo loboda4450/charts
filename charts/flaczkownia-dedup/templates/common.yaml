@@ -24,10 +24,10 @@ controllers:
         - {{ .Values.connector.port }}
         - --view-dir
         - {{ .Values.connector.viewDir }}
-        {{- if eq .Values.viewMode "symlink" }}
+        {{- if eq .Values.connector.viewMode "symlink" }}
         - --source-relative-path
         - {{ required "sourceRelativePath is required with symlink view mode" .Values.connector.sourceRelativePath }}
-        {{- else if eq .Values.viewMode "copy" }}
+        {{- else if eq .Values.connector.viewMode "copy" }}
         - --source-path
         - {{ required "sourcePath is required with copy view mode" .Values.connector.sourcePath }}
         {{- end }}
@@ -92,7 +92,7 @@ persistence:
         dedup:
           - path: /app/data/music
             readOnly: true
-      {{- if eq .Values.viewMode "copy" }}
+      {{- if eq .Values.connector.viewMode "copy" }}
       connector:
         connector:
           - path: /app/data/music

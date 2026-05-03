@@ -13,12 +13,12 @@ image:
 # # -- image tag
   tag: latest
 
-# # -- mode of deduplicated view: copy|symlink|""
-viewMode: copy
 # # -- database URL (e.g. sqlite or pgsql path)
 database: "sqlite:////app/data/dedup.sqlite3"
 
 connector:
+# # -- mode of deduplicated view: copy|symlink|""
+  viewMode: copy
 # # -- port to listen on
   port: 9999
 # # -- path prepended to jobs added to queue from webhook
