@@ -42,7 +42,7 @@ controllers:
     containers:
       connector:
         image:
-          {{- toYaml .Values.image | nindent 10 }}
+          {{- toYaml .Values.connector.image | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
@@ -60,7 +60,7 @@ controllers:
     containers:
       dedup:
         image:
-          {{- toYaml .Values.image | nindent 10 }}
+          {{- toYaml .Values.dedup.image | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false

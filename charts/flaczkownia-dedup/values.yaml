@@ -5,18 +5,17 @@
 # https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
 #
 
-image:
-# # -- image repository
-  repository: ghcr.io/fumr/flaczkownia-dedup
-# # -- image pull policy
-  pullPolicy: IfNotPresent
-# # -- image tag
-  tag: latest
-
 # # -- database URL (e.g. sqlite or pgsql path)
 database: "sqlite:////app/data/dedup.sqlite3"
 
 connector:
+  image:
+    # # -- image repository
+    repository: ghcr.io/fumr/flaczkownia-dedup
+    # # -- image pull policy
+    pullPolicy: IfNotPresent
+    # # -- image tag
+    tag: latest
 # # -- mode of deduplicated view: copy|symlink|""
   viewMode: copy
 # # -- port to listen on
@@ -35,6 +34,13 @@ connector:
 # # sourceRelativePath: ../ziprofs/mnt
 
 dedup:
+  image:
+    # # -- image repository
+    repository: ghcr.io/fumr/flaczkownia-dedup
+    # # -- image pull policy
+    pullPolicy: IfNotPresent
+    # # -- image tag
+    tag: latest
   replicas: 1
 # # -- webhook URL to send jobs to
 # # webhookUrl: ""
