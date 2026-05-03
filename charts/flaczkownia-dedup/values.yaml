@@ -16,8 +16,8 @@ connector:
     pullPolicy: IfNotPresent
     # # -- image tag
     tag: latest
-# # -- mode of deduplicated view: copy|symlink|""
-  viewMode: copy
+# # -- mode of deduplicated view: copy|symlink|""|null
+  viewMode: null
 # # -- port to listen on
   port: 9999
 # # -- path prepended to jobs added to queue from webhook
@@ -29,7 +29,7 @@ connector:
 # # -- prefix to strip from DB paths before symlinking
   dbPrefix: data/music
 # # -- path where original files are stored (copy source)
-  sourcePath: /app/data/music
+# # sourcePath: /app/data/music
 # # -- relative path from viewDir to source root (symlink target)
 # # sourceRelativePath: ../ziprofs/mnt
 # # -- webhook URLs to send jobs to
