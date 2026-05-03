@@ -108,7 +108,6 @@ persistence:
 # # -- Deduplicated view directory
     accessMode: ReadWriteOnce
     size: 1Gi
-    storageClass: external
     advancedMounts:
       connector:
         connector:
