@@ -106,6 +106,7 @@ persistence:
 
   deduplicated:
 # # -- Deduplicated view directory
+    enabled: {{ not (empty .Values.connector.viewMode) }}
     accessMode: ReadWriteOnce
     size: 1Gi
     advancedMounts:
