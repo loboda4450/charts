@@ -34,9 +34,12 @@ controllers:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:
-          readOnlyRootFilesystem: true
+          readOnlyRootFilesystem: false
           allowPrivilegeEscalation: true
           privileged: true
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
         envFrom:
           {{- if and (hasKey (.Values.secret) "tgapp") (not (empty .Values.secret.tgapp)) }}
           - name: tgapp
