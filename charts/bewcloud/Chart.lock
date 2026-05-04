@@ -1,9 +1,9 @@
 dependencies:
 - name: common
   repository: https://bjw-s-labs.github.io/helm-charts
-  version: 4.6.2
+  version: 5.0.0
 - name: radicale
   repository: oci://ghcr.io/loboda4450/charts
   version: 0.1.3
-digest: sha256:56714969bd7838737d7897503477392b7fe2efce989690280d5b7996d46c0590
-generated: "2026-04-28T21:36:06.590870047Z"
+digest: sha256:2bd5312cdfba06b09069400f6ea948a9a65ba35ea0427d79c1f5f901d1d5317c
+generated: "2026-05-04T12:37:27.852730564Z"
