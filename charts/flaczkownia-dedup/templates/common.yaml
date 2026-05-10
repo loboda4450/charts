@@ -56,7 +56,7 @@ controllers:
         - {{ .Values.database | quote }}
         {{- if or (empty .Values.connector.webhookUrls) (eq (len .Values.connector.webhookUrls) 0)}}
         - --webhook-url
-        - {{ printf "http://%s.%s.svc.cluster.local:%d/api/v1/dedup_processed_file_webhook" .Release.Name .Release.Namespace (int .Values.connector.port) | quote }}
+        - {{ printf "http://%s-flaczkownia-dedup.%s.svc.cluster.local:%d/api/v1/dedup_processed_file_webhook" (include "bjw-s.common.lib.chart.names.fullname" .) .Release.Namespace (int .Values.connector.port) | quote }}
         {{- else }}
         {{- range .Values.connector.webhookUrls }}
         - --webhook-url
