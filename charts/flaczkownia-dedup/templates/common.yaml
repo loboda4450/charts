@@ -71,7 +71,6 @@ controllers:
         image:
           {{- toYaml .Values.dedup.image | nindent 10 }}
         securityContext:
-          readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
 
 persistence:
