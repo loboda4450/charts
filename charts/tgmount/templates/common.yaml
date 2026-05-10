@@ -34,7 +34,7 @@ controllers:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:
-          readOnlyRootFilesystem: false
+          readOnlyRootFilesystem: true
           allowPrivilegeEscalation: true
           privileged: true
           runAsNonRoot: true
