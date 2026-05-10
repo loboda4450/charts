@@ -23,6 +23,8 @@ controllers:
         - --port
         - {{ .Values.connector.port | quote }}
         {{- if not (empty .Values.connector.viewMode) }}
+        - --view-mode
+        - {{ .Values.connector.viewMode | quote }}
         - --view-dir
         - {{ .Values.connector.viewDir | quote }}
         - --db-prefix
