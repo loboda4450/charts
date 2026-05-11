@@ -1,10 +1,10 @@
 {{/* Preprocess values and prepare config file */}}
 {{- define "feishin.preprocess" -}}
 controllers:
-  main:
+  feishin:
     replicas: {{ .Values.replicas }}
     containers:
-      main:
+      feishin:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         env:

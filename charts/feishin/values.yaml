@@ -24,7 +24,7 @@ env:
 service:
   http:
     type: ClusterIP
-    controller: main
+    controller: feishin
     ports:
       http:
         port: 9180
@@ -32,7 +32,7 @@ service:
 ingress:
 # # -- Further ingress configuration options are available here
 # #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml#L585)
-  main:
+  feishin:
     enabled: false
 #   # ingressClassName: nginx-public
 #   # annotations:
