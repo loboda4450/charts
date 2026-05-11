@@ -3,7 +3,7 @@ name: bewcloud
 description: A Helm chart for BewCloud
 
 type: application
-version: 0.3.8
+version: 0.4.0
 # renovate: image=ghcr.io/bewcloud/bewcloud
 appVersion: "v4.5.1"
 

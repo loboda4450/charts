@@ -106,13 +106,13 @@ persistence:
     size: 100Gi
     storageClass: external
     advancedMounts:
-      main:
-        main:
+      bewcloud:
+        bewcloud:
           - path: /app/data-files
             readOnly: false
 
 ingress:
-  main:
+  bewcloud:
     enabled: false
 #  # annotations:
 #  #   cert-manager.io/cluster-issuer: letsencrypt-http01

@@ -60,16 +60,16 @@ persistence:
     type: configMap
     identifier: bewcloud
     advancedMounts:
-      main:
-        main:
+      bewcloud:
+        bewcloud:
           - path: /app/bewcloud.config.ts
             readOnly: true
             subPath: bewcloud.config.ts
 
 controllers:
-  main:
+  bewcloud:
     containers:
-      main:
+      bewcloud:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         envFrom:
@@ -115,7 +115,7 @@ controllers:
       "helm.sh/hook": pre-install,pre-upgrade
       "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     containers:
-      main:
+      migrations:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         command: ["make", "migrate-db"]
@@ -131,7 +131,7 @@ controllers:
 service:
   http:
     type: ClusterIP
-    controller: main
+    controller: bewcloud
     ports:
       http:
         port: 8000
