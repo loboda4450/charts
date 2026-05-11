@@ -18,17 +18,17 @@ persistence:
     type: configMap
     identifier: radicale
     advancedMounts:
-      main:
-        main:
+      radicale:
+        radicale:
           - path: /config/config
             readOnly: true
             subPath: config
 {{- end }}
 
 controllers:
-  main:
+  radicale:
     containers:
-      main:
+      radicale:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:
@@ -46,7 +46,7 @@ controllers:
 service:
   http:
     type: ClusterIP
-    controller: main
+    controller: radicale
     ports:
       http:
         port: 5232

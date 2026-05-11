@@ -37,13 +37,13 @@ persistence:
     size: 1Gi
     storageClass: external
     advancedMounts:
-      main:
-        main:
+      radicale:
+        radicale:
           - path: /data
             readOnly: false
 
 ingress:
-  main:
+  radicale:
     enabled: false
 #  # annotations:
 #  #   cert-manager.io/cluster-issuer: letsencrypt-http01
