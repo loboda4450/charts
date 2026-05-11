@@ -48,8 +48,8 @@ persistence:
     type: configMap
     identifier: config
     advancedMounts:
-      main:
-        main:
+      navidrome:
+        navidrome:
           - path: /data/navidrome.toml
             subPath: navidrome.toml
   {{- end }}
@@ -57,7 +57,7 @@ persistence:
 service:
   http:
     type: ClusterIP
-    controller: main
+    controller: navidrome
     ports:
       http:
         {{- if .Values.config }}
@@ -67,7 +67,7 @@ service:
         {{- end }}
 
 controllers:
-  main:
+  navidrome:
     type: statefulset
     replicas: {{ .Values.replicas | default 1 }}
     pod:
@@ -76,7 +76,7 @@ controllers:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     containers:
-      main:
+      navidrome:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         {{- with .Values.securityContext }}
