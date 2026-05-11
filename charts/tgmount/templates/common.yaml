@@ -15,7 +15,7 @@ secrets:
   {{- end }}
 
 controllers:
-  main:
+  tgmount:
     type: statefulset
     replicas: {{ .Values.replicas | default 1 }}
     pod:
@@ -30,7 +30,7 @@ controllers:
       {{- end }}
 
     containers:
-      main:
+      tgmount:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:
