@@ -42,6 +42,6 @@ dedup:
     # # -- image pull policy
     pullPolicy: IfNotPresent
     # # -- image tag
-    tag: latest@sha256:d167995d3fe488994a6e746225cb62a8474307d4adc27c18b3ba6e3943bd660e
+    tag: latest@sha256:b41a5b780c77a1db7a868bf0c381d3bafb45c9b803835c05cd15a50f54f32089
   replicas: 1
 
