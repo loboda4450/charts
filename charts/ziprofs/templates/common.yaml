@@ -2,7 +2,7 @@
 {{- define "ziprofs.preprocess" -}}
 
 controllers:
-  main:
+  ziprofs:
     type: statefulset
     replicas: {{ .Values.replicas | default 1 }}
     pod:
@@ -17,7 +17,7 @@ controllers:
       {{- end }}
 
     containers:
-      main:
+      ziprofs:
         image:
           {{- toYaml .Values.image | nindent 10 }}
         securityContext:

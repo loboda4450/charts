@@ -27,8 +27,8 @@ persistence:
     size: 1Gi
     storageClass: external
     advancedMounts:
-      main:
-        main:
+      ziprofs:
+        ziprofs:
           - path: /app/root
             readOnly: true
 
@@ -38,8 +38,8 @@ persistence:
     size: 1Gi
     storageClass: external
     advancedMounts:
-      main:
-        main:
+      ziprofs:
+        ziprofs:
           - path: /app/mnt
             readOnly: false
             mountPropagation: Bidirectional
