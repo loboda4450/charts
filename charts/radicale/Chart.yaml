@@ -3,11 +3,11 @@ name: radicale
 description: A Helm chart for Radicale
 
 type: application
-version: 0.2.1
+version: 0.2.2
 # renovate: image=tomsquest/docker-radicale
 appVersion: "3.7.3.0"
 
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts
-    version: 5.0.0
+    version: 5.0.1
