@@ -2,13 +2,13 @@ apiVersion: v2
 name: navidrome
 description: GoLang streaming service
 type: application
-version: 0.2.0
+version: 0.2.1
 # renovate: image=ghcr.io/navidrome/navidrome
 appVersion: 0.61.2
 kubeVersion: ">=1.22.0-0"
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts
-    version: 5.0.0
+    version: 5.0.1
 sources:
   - https://github.com/navidrome/navidrome
