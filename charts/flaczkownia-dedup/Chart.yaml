@@ -3,10 +3,10 @@ name: flaczkownia-dedup
 description: A Helm chart for Flaczkownia Deduplication service
 
 type: application
-version: 0.1.11
+version: 0.1.12
 appVersion: "latest"
 
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts
-    version: 5.0.0
+    version: 5.0.1
