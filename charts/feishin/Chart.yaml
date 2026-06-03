@@ -2,9 +2,9 @@ apiVersion: v2
 name: feishin
 description: A Helm chart for Feishin application
 type: application
-version: 0.2.3
+version: 0.2.4
 # renovate: image=ghcr.io/jeffvli/feishin
-appVersion: "1.12.1"
+appVersion: "1.13.0"
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts
