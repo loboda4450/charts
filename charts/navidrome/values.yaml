@@ -46,6 +46,19 @@ securityContext:
   runAsUser: 65534
   runAsGroup: 65534
 
+probes:
+  liveness:
+    enabled: true
+    type: HTTP
+    path: /ping
+  readiness:
+    enabled: true
+    type: HTTP
+    path: /ping
+  startup:
+    enabled: true
+    type: HTTP
+    path: /ping
 
 config:
 # # -- Config has to include only "In config file" references, not environmental variables
