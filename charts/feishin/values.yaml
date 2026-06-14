@@ -21,6 +21,18 @@ env:
 # # SERVER_TYPE: navidrome
 # # SERVER_URL: https://navidrome.example.com
 
+probes:
+  liveness:
+    enabled: true
+    type: HTTP
+    path: /
+  readiness:
+    enabled: true
+    type: HTTP
+    path: /
+  startup:
+    enabled: true
+
 service:
   http:
     type: ClusterIP

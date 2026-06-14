@@ -9,6 +9,10 @@ controllers:
           {{- toYaml .Values.image | nindent 10 }}
         env:
           {{- toYaml .Values.env | nindent 10 }}
+        {{ with .Values.probes }}
+        probes:
+          {{ toYaml . | nindent 10 }}
+        {{- end }}
 {{- end -}}
 {{- $_ := merge .Values (include "feishin.preprocess" . | fromYaml) -}}
 
