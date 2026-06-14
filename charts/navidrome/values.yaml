@@ -57,8 +57,18 @@ probes:
     path: /ping
   startup:
     enabled: true
-    type: HTTP
-    path: /ping
+    custom: true
+    spec:
+      httpGet:
+        path: /ping
+        port: http
+        scheme: HTTP
+      initialDelaySeconds: 0
+      # -- Navidrome can take a long time to start with large libraries due to database migrations being
+      #    bound to main process, we can't run them separately, so we set a high failure threshold
+      failureThreshold: 120
+      periodSeconds: 10
+      timeoutSeconds: 1
 
 config:
 # # -- Config has to include only "In config file" references, not environmental variables
