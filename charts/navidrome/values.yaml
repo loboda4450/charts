@@ -61,7 +61,7 @@ probes:
     spec:
       httpGet:
         path: /ping
-        port: http
+        port: 4533
         scheme: HTTP
       initialDelaySeconds: 0
       # -- Navidrome can take a long time to start with large libraries due to database migrations being
