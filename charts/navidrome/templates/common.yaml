@@ -60,11 +60,7 @@ service:
     controller: navidrome
     ports:
       http:
-        {{- if .Values.config }}
-        port: {{ .Values.config.Port | default 4533 }}
-        {{- else }}
-        port: 4533
-        {{- end }}
+        port: {{ dig "PORT" 4533 .Values.config }}
 
 controllers:
   navidrome:
@@ -88,10 +84,45 @@ controllers:
             value: ""
           - name: ND_DATAFOLDER
             value: ""
-        {{ with .Values.probes }}
         probes:
-          {{ toYaml . | nindent 10 }}
-        {{- end }}
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ping
+                port: {{ default 4533 (index .Values "config" "PORT") }}
+                scheme: HTTP
+              initialDelaySeconds: 0
+              failureThreshold: 3
+              periodSeconds: 10
+              timeoutSeconds: 1
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ping
+                port: {{ default 4533 (index .Values "config" "PORT") }}
+                scheme: HTTP
+              initialDelaySeconds: 0
+              failureThreshold: 3
+              periodSeconds: 10
+              timeoutSeconds: 1
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ping
+                port: {{ default 4533 (index .Values "config" "PORT") }}
+                scheme: HTTP
+              initialDelaySeconds: 0
+              # -- Navidrome can take a long time to start with large libraries due to database migrations being
+              #    bound to main process, we can't run them separately, so we set a high failure threshold
+              failureThreshold: 120
+              periodSeconds: 10
+              timeoutSeconds: 1
 
         {{ if .Values.secret }}
         envFrom:

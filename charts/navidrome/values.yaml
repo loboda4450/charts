@@ -46,30 +46,6 @@ securityContext:
   runAsUser: 65534
   runAsGroup: 65534
 
-probes:
-  liveness:
-    enabled: true
-    type: HTTP
-    path: /ping
-  readiness:
-    enabled: true
-    type: HTTP
-    path: /ping
-  startup:
-    enabled: true
-    custom: true
-    spec:
-      httpGet:
-        path: /ping
-        port: 4533
-        scheme: HTTP
-      initialDelaySeconds: 0
-      # -- Navidrome can take a long time to start with large libraries due to database migrations being
-      #    bound to main process, we can't run them separately, so we set a high failure threshold
-      failureThreshold: 120
-      periodSeconds: 10
-      timeoutSeconds: 1
-
 config:
 # # -- Config has to include only "In config file" references, not environmental variables
 # #    [[ref]](https://www.navidrome.org/docs/usage/configuration/options/#available-options)
