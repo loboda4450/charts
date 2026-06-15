@@ -60,7 +60,7 @@ service:
     controller: navidrome
     ports:
       http:
-        port: {{ dig "PORT" 4533 .Values.config }}
+        port: {{ dig "Port" 4533 .Values.config }}
 
 controllers:
   navidrome:
@@ -91,7 +91,7 @@ controllers:
             spec:
               httpGet:
                 path: /ping
-                port: {{ default 4533 (index .Values "config" "PORT") }}
+                port: {{ dig "Port" 4533 .Values.config }}
                 scheme: HTTP
               initialDelaySeconds: 0
               failureThreshold: 3
@@ -103,7 +103,7 @@ controllers:
             spec:
               httpGet:
                 path: /ping
-                port: {{ default 4533 (index .Values "config" "PORT") }}
+                port: {{ dig "Port" 4533 .Values.config }}
                 scheme: HTTP
               initialDelaySeconds: 0
               failureThreshold: 3
@@ -115,7 +115,7 @@ controllers:
             spec:
               httpGet:
                 path: /ping
-                port: {{ default 4533 (index .Values "config" "PORT") }}
+                port: {{ dig "Port" 4533 .Values.config }}
                 scheme: HTTP
               initialDelaySeconds: 0
               # -- Navidrome can take a long time to start with large libraries due to database migrations being
