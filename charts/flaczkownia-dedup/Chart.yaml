@@ -3,7 +3,7 @@ name: flaczkownia-dedup
 description: A Helm chart for Flaczkownia Deduplication service
 
 type: application
-version: 0.1.15
+version: 0.1.16
 appVersion: "latest"
 
 dependencies:
