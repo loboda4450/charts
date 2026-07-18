@@ -11,7 +11,7 @@ image:
 # # -- image pull policy
   pullPolicy: IfNotPresent
 # # -- image tag
-  tag: latest@sha256:3c01956c42db854438ac6b0f3b59f366fdfe72981d4eb8c8d13dd50a9a0cd03e
+  tag: latest@sha256:b4cb7bce7bb32c3459989f86adc7c3018e58d15c24bd4b31a3c0146b6613f1f1
 
 args:
 # -- Override default command(s) to run
