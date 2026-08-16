@@ -10,7 +10,7 @@ appVersion: "v4.15.0"
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts
-    version: 5.0.1
+    version: 5.1.0
   - name: radicale
     condition: radicale.enabled
     repository: oci://ghcr.io/loboda4450/charts
