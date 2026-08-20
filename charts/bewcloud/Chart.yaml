@@ -3,7 +3,7 @@ name: bewcloud
 description: A Helm chart for BewCloud
 
 type: application
-version: 0.4.18
+version: 0.4.19
 # renovate: image=ghcr.io/bewcloud/bewcloud
 appVersion: "v4.15.0"
 
@@ -14,4 +14,4 @@ dependencies:
   - name: radicale
     condition: radicale.enabled
     repository: oci://ghcr.io/loboda4450/charts
-    version: 0.2.4
+    version: 0.2.5
