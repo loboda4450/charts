@@ -2,9 +2,9 @@ apiVersion: v2
 name: navidrome
 description: GoLang streaming service
 type: application
-version: 0.2.14
+version: 0.2.15
 # renovate: image=ghcr.io/navidrome/navidrome
-appVersion: 0.64.1
+appVersion: 0.64.2
 kubeVersion: ">=1.22.0-0"
 dependencies:
   - name: common
