@@ -15,7 +15,7 @@ connector:
     # # -- image pull policy
     pullPolicy: IfNotPresent
     # # -- image tag
-    tag: latest@sha256:dd67148d409af8d1f1ab3928f6ec2986ad502b89ecf19b5af4ba5d4dc0c4f322
+    tag: latest@sha256:b54930e7f1df8c17ec04f01466a9e9079a4d967de86bbb0fa9ae8b2f934bf11a
 # # -- mode of deduplicated view: copy|symlink|""|null
   viewMode: null
 # # -- port to listen on
@@ -42,6 +42,6 @@ dedup:
     # # -- image pull policy
     pullPolicy: IfNotPresent
     # # -- image tag
-    tag: latest@sha256:dd67148d409af8d1f1ab3928f6ec2986ad502b89ecf19b5af4ba5d4dc0c4f322
+    tag: latest@sha256:b54930e7f1df8c17ec04f01466a9e9079a4d967de86bbb0fa9ae8b2f934bf11a
   replicas: 1
 
