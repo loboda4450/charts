@@ -72,7 +72,7 @@ config:
     env: production
     log_to_stdout: true
 #   # -- Connection pool size, keep it at or above sidekiq.concurrency
-    max_threads:
+    max_threads: 5
   application:
     hosts:
       - dawarich.example.com
@@ -80,8 +80,8 @@ config:
     domain:
   timezone: Europe/Warsaw
   protocol: https
-  distance_unit:
-  min_minutes_spent_in_city:
+  distance_unit: km
+  min_minutes_spent_in_city: 60
   selfhosted: true
   database:
     host:
@@ -92,9 +92,9 @@ config:
 #   # -- Required unless valkey.enabled is true
 #   # url: redis://redis.example.com:6379
     url:
-    cache_db:
-    job_queue_db:
-    ws_db:
+    cache_db: 0
+    job_queue_db: 1
+    ws_db: 2
   web:
 #   # -- Puma workers. One is plenty for a household instance, raise for busier ones
     concurrency: 1
@@ -105,42 +105,44 @@ config:
     store_geodata: true
     photon:
       host:
-      use_https:
+      use_https: false
     nominatim:
       host:
-      use_https:
+      use_https: true
 # # -- OIDC [[ref]](https://dawarich.app/docs/self-hosting/configuration/oidc-authentication/)
 # #    Credentials go to `secret.oidc`. Use either issuer (discovery) or host and endpoints
   oidc:
     issuer:
     redirect_uri:
-    provider_name:
-    auto_register:
-    pkce_enabled:
+    provider_name: Openid Connect
+    auto_register: true
+    pkce_enabled: false
+#   # -- Manual endpoints, alternative to issuer. App defaults: scheme https, port 443,
+#   #    /authorize, /token, /userinfo
     host:
     scheme:
     port:
     authorization_endpoint:
     token_endpoint:
     userinfo_endpoint:
-  allow_email_password_registration:
-  allow_email_password_login:
+  allow_email_password_registration: false
+  allow_email_password_login: true
 # # -- SMTP, credentials go to `secret.smtp`
   smtp:
     server:
     port:
     domain:
     from:
-    authentication:
-    starttls:
-    open_timeout:
-    read_timeout:
+    authentication: plain
+    starttls: true
+    open_timeout: 5
+    read_timeout: 5
   prometheus:
 #   # -- Exporter runs in the web container only
     enabled: false
-    host:
-    port:
-  archive_raw_data:
+    host: 0.0.0.0
+    port: 9394
+  archive_raw_data: false
 #   # -- Run the app as a non-root user by setting PUID/PGID (do NOT use securityContext runAsUser)
 #   # puid: 1000
 #   # pgid: 1000
