@@ -1,0 +1,159 @@
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+#
+
+image:
+# # -- image repository
+  repository: freikin/dawarich
+# # -- image pull policy
+  pullPolicy: IfNotPresent
+# # -- image tag
+  tag: 1.15.3@sha256:d1c24f65a75b2242e720c441bc72de24c1152d63ce26198c386f07092df7e1f7
+
+secret:
+# # [[ref]](https://dawarich.app/docs/self-hosting/environment-variables/)
+# # -- Specify required secrets
+# # PostgreSQL (PostGIS) options:
+  database:
+    {}
+# # A) database:
+#     # host: postgres_host
+#     # port: 5432
+#     # name: dawarich
+#     # user: postgres_user
+#     # password: postgres_password
+# # B) database:
+#     # Note, that this secret must contain the following keys: DATABASE_HOST, DATABASE_PORT, DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD
+#     # existingSecret: database_existingSecret
+# # Rails options:
+  rails:
+    {}
+# # A) rails:
+#     # secretKeyBase: fake
+# # B) rails:
+#     # Note, that this secret must contain the following keys: SECRET_KEY_BASE
+#     # existingSecret: rails_existingSecret
+# #
+# # Optional secrets which also enable/disable features:
+# # OTP (2FA) options:
+# # A) otp:
+#     # encryptionPrimaryKey: fake
+#     # encryptionDeterministicKey: fake
+#     # encryptionKeyDerivationSalt: fake
+# # B) otp:
+#     # Note, that this secret must contain the following keys: OTP_ENCRYPTION_PRIMARY_KEY, OTP_ENCRYPTION_DETERMINISTIC_KEY, OTP_ENCRYPTION_KEY_DERIVATION_SALT
+#     # existingSecret: otp_existingSecret
+
+config:
+# # -- Application configuration, mapped to environment variables
+# #    [[ref]](https://dawarich.app/docs/self-hosting/environment-variables/)
+  rails:
+    env: production
+    log_to_stdout: true
+  application:
+    hosts:
+      - dawarich.example.com
+  timezone: Europe/Warsaw
+  protocol: https
+  prometheus:
+    enabled: false
+  selfhosted: true
+  store_geodata: true
+  sidekiq:
+    concurrency: 5
+  redis:
+#   # -- Required unless valkey.enabled is true
+#   # url: redis://redis.example.com:6379
+    {}
+
+valkey:
+# # -- Deploy a bundled Valkey (Redis compatible) instance and use it automatically
+# #    [[ref]](https://github.com/valkey-io/valkey-helm/blob/main/valkey/values.yaml)
+  enabled: false
+
+persistence:
+# # -- Further configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml)
+  public:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    advancedMounts:
+      dawarich:
+        dawarich:
+          - path: /var/app/public
+        sidekiq:
+          - path: /var/app/public
+  watched:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    advancedMounts:
+      dawarich:
+        dawarich:
+          - path: /var/app/tmp/imports/watched
+        sidekiq:
+          - path: /var/app/tmp/imports/watched
+  storage:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    advancedMounts:
+      dawarich:
+        dawarich:
+          - path: /var/app/storage
+        sidekiq:
+          - path: /var/app/storage
+  db-data:
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    advancedMounts:
+      dawarich:
+        dawarich:
+          - path: /dawarich_db_data
+
+ingress:
+# # -- Further ingress configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml)
+  dawarich:
+    enabled: false
+#   # ingressClassName: nginx-public
+#   # annotations:
+#   #   cert-manager.io/cluster-issuer: letsencrypt-http01
+    hosts: []
+#   #   - host: dawarich.example.com
+#   #     paths:
+#   #       - path: /
+#   #         service:
+#   #           identifier: http
+#   #           port: http
+    tls: []
+#   #   - secretName: dawarich-cert
+#   #     hosts:
+#   #       - dawarich.example.com
+
+route:
+# # -- Further Gateway API route configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml#L2088)
+  dawarich:
+    enabled: false
+#   # kind: HTTPRoute
+#   # hostnames:
+#   #   - dawarich.example.com
+#   # parentRefs:
+#   #   - identifier: dawarich
+#   #     sectionName: http
+#   # Rules default to routing to the Dawarich service.
+
+listenerSets:
+# # -- Further Gateway API ListenerSet configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml#L2133)
+  dawarich:
+    enabled: false
+#   # parentRef:
+#   #   name: gateway
+#   #   namespace: gateway-system
+#   # listeners:
+#   #   - name: http
+#   #     port: 80
+#   #     protocol: HTTP

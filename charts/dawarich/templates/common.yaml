@@ -1,0 +1,169 @@
+{{/* Preprocess values and prepare config file */}}
+{{- define "dawarich.preprocess" -}}
+{{- $redisUrl := "" }}
+{{- if .Values.valkey.enabled }}
+  {{- $valkeyName := .Values.valkey.fullnameOverride | default (ternary .Release.Name (printf "%s-valkey" .Release.Name) (contains "valkey" .Release.Name)) }}
+  {{- $redisUrl = printf "redis://%s:6379" $valkeyName }}
+{{- else }}
+  {{- $redisUrl = required "config.redis.url is required when valkey.enabled is false" .Values.config.redis.url }}
+{{- end }}
+
+secrets:
+  {{- if not (hasKey .Values.secret.database "existingSecret") }}
+  database:
+    stringData:
+      DATABASE_HOST: {{ required "Database host is required" .Values.secret.database.host }}
+      DATABASE_PORT: {{ required "Database port is required" .Values.secret.database.port | quote }}
+      DATABASE_NAME: {{ required "Database name is required" .Values.secret.database.name }}
+      DATABASE_USERNAME: {{ required "Database user is required" .Values.secret.database.user }}
+      DATABASE_PASSWORD: {{ required "Database password is required" .Values.secret.database.password }}
+  {{- end }}
+  {{- if not (hasKey .Values.secret.rails "existingSecret") }}
+  rails:
+    stringData:
+      SECRET_KEY_BASE: {{ required "Rails secret key base is required" .Values.secret.rails.secretKeyBase }}
+  {{- end }}
+  {{- if .Values.secret.otp }}
+  {{- if not (hasKey .Values.secret.otp "existingSecret") }}
+  otp:
+    stringData:
+      OTP_ENCRYPTION_PRIMARY_KEY: {{ required "OTP encryption primary key is required" .Values.secret.otp.encryptionPrimaryKey }}
+      OTP_ENCRYPTION_DETERMINISTIC_KEY: {{ required "OTP encryption deterministic key is required" .Values.secret.otp.encryptionDeterministicKey }}
+      OTP_ENCRYPTION_KEY_DERIVATION_SALT: {{ required "OTP encryption key derivation salt is required" .Values.secret.otp.encryptionKeyDerivationSalt }}
+  {{- end }}
+  {{- end }}
+
+service:
+  http:
+    type: ClusterIP
+    controller: dawarich
+    ports:
+      http:
+        port: 3000
+
+controllers:
+  dawarich:
+    type: statefulset
+    containers:
+      dawarich:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        command:
+          - web-entrypoint.sh
+        args:
+          - bin/rails
+          - server
+          - -p
+          - "3000"
+          - -b
+          - "::"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - SETUID
+              - SETGID
+              - CHOWN
+              - KILL
+        env:
+          RAILS_ENV: {{ .Values.config.rails.env | quote }}
+          RAILS_LOG_TO_STDOUT: {{ .Values.config.rails.log_to_stdout | quote }}
+          REDIS_URL: {{ $redisUrl | quote }}
+          APPLICATION_HOSTS: {{ join "," .Values.config.application.hosts | quote }}
+          APPLICATION_PROTOCOL: {{ .Values.config.protocol | quote }}
+          TIME_ZONE: {{ .Values.config.timezone | quote }}
+          PROMETHEUS_EXPORTER_ENABLED: {{ .Values.config.prometheus.enabled | quote }}
+          SELF_HOSTED: {{ .Values.config.selfhosted | quote }}
+          STORE_GEODATA: {{ .Values.config.store_geodata | quote }}
+        envFrom:
+          {{- include "dawarich.envFrom" . | nindent 10 }}
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/v1/health
+                port: 3000
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 3
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/v1/health
+                port: 3000
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 3
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/v1/health
+                port: 3000
+              # -- Database migrations are run by the entrypoint, so allow a long startup
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 60
+      sidekiq:
+        image:
+          {{- toYaml .Values.image | nindent 10 }}
+        command:
+          - sidekiq-entrypoint.sh
+        args:
+          - sidekiq
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - SETUID
+              - SETGID
+              - CHOWN
+              - KILL
+        env:
+          RAILS_ENV: {{ .Values.config.rails.env | quote }}
+          RAILS_LOG_TO_STDOUT: {{ .Values.config.rails.log_to_stdout | quote }}
+          REDIS_URL: {{ $redisUrl | quote }}
+          APPLICATION_HOSTS: {{ join "," .Values.config.application.hosts | quote }}
+          APPLICATION_PROTOCOL: {{ .Values.config.protocol | quote }}
+          BACKGROUND_PROCESSING_CONCURRENCY: {{ .Values.config.sidekiq.concurrency | quote }}
+          PROMETHEUS_EXPORTER_ENABLED: {{ .Values.config.prometheus.enabled | quote }}
+          SELF_HOSTED: {{ .Values.config.selfhosted | quote }}
+          STORE_GEODATA: {{ .Values.config.store_geodata | quote }}
+        envFrom:
+          {{- include "dawarich.envFrom" . | nindent 10 }}
+{{- end -}}
+
+{{/* Secrets shared by the web and sidekiq containers */}}
+{{- define "dawarich.envFrom" -}}
+{{- if not (hasKey .Values.secret.database "existingSecret") }}
+- secret: database
+{{- else }}
+- secret: {{ .Values.secret.database.existingSecret }}
+{{- end }}
+{{- if not (hasKey .Values.secret.rails "existingSecret") }}
+- secret: rails
+{{- else }}
+- secret: {{ .Values.secret.rails.existingSecret }}
+{{- end }}
+{{- if .Values.secret.otp }}
+{{- if not (hasKey .Values.secret.otp "existingSecret") }}
+- secret: otp
+{{- else }}
+- secret: {{ .Values.secret.otp.existingSecret }}
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{- $_ := merge .Values (include "dawarich.preprocess" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{- include "bjw-s.common.loader.all" . }}
