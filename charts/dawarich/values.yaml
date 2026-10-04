@@ -11,7 +11,7 @@ image:
 # # -- image pull policy
   pullPolicy: IfNotPresent
 # # -- image tag
-  tag: 1.15.3@sha256:d1c24f65a75b2242e720c441bc72de24c1152d63ce26198c386f07092df7e1f7
+  tag: 1.15.3@sha256:589e3606b11b61c3fa2d9661832cb73645a9b93a9cc7d807a071e2bc6c584498
 
 secret:
 # # [[ref]](https://dawarich.app/docs/self-hosting/environment-variables/)
@@ -62,8 +62,15 @@ config:
     enabled: false
   selfhosted: true
   store_geodata: true
+  web:
+#   # -- Puma workers. One is plenty for a household instance, raise for busier ones
+    concurrency: 1
   sidekiq:
-    concurrency: 5
+#   # -- Job threads. Keeps idle memory and DB connections low, raise temporarily for large imports
+    concurrency: 3
+#   # -- Run the app as a non-root user by setting PUID/PGID (do NOT use securityContext runAsUser)
+#   # puid: 1000
+#   # pgid: 1000
   redis:
 #   # -- Required unless valkey.enabled is true
 #   # url: redis://redis.example.com:6379
