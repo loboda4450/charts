@@ -1,0 +1,17 @@
+apiVersion: v2
+name: dawarich
+description: A Helm chart for Dawarich
+
+type: application
+version: 0.1.0-rc.1
+# renovate: image=freikin/dawarich
+appVersion: "1.15.3"
+
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 5.2.1
+  - name: valkey
+    condition: valkey.enabled
+    version: 0.12.0
+    repository: https://valkey.io/valkey-helm/
