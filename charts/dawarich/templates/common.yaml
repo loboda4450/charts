@@ -2,34 +2,41 @@
 {{- define "dawarich.preprocess" -}}
 {{- $redisUrl := "" }}
 {{- if .Values.valkey.enabled }}
-  {{- $valkeyName := .Values.valkey.fullnameOverride | default (ternary .Release.Name (printf "%s-valkey" .Release.Name) (contains "valkey" .Release.Name)) }}
-  {{- $redisUrl = printf "redis://%s:6379" $valkeyName }}
+  {{- $valkeyName := .Values.valkey.nameOverride | default "valkey" }}
+  {{- if .Values.valkey.fullnameOverride }}
+    {{- $valkeyName = .Values.valkey.fullnameOverride }}
+  {{- else if not (contains $valkeyName .Release.Name) }}
+    {{- $valkeyName = printf "%s-%s" .Release.Name $valkeyName }}
+  {{- else }}
+    {{- $valkeyName = .Release.Name }}
+  {{- end }}
+  {{- $redisUrl = printf "redis://%s:%v" ($valkeyName | trunc 63 | trimSuffix "-") (dig "service" "port" 6379 .Values.valkey) }}
 {{- else }}
   {{- $redisUrl = required "config.redis.url is required when valkey.enabled is false" .Values.config.redis.url }}
 {{- end }}
 
 secrets:
-  {{- if not (hasKey .Values.secret.database "existingSecret") }}
+  {{- if not .Values.secret.database.existingSecret }}
   database:
     stringData:
-      DATABASE_HOST: {{ required "Database host is required" .Values.secret.database.host }}
+      DATABASE_HOST: {{ required "Database host is required" .Values.secret.database.host | quote }}
       DATABASE_PORT: {{ required "Database port is required" .Values.secret.database.port | quote }}
-      DATABASE_NAME: {{ required "Database name is required" .Values.secret.database.name }}
-      DATABASE_USERNAME: {{ required "Database user is required" .Values.secret.database.user }}
-      DATABASE_PASSWORD: {{ required "Database password is required" .Values.secret.database.password }}
+      DATABASE_NAME: {{ required "Database name is required" .Values.secret.database.name | quote }}
+      DATABASE_USERNAME: {{ required "Database user is required" .Values.secret.database.user | quote }}
+      DATABASE_PASSWORD: {{ required "Database password is required" .Values.secret.database.password | quote }}
   {{- end }}
-  {{- if not (hasKey .Values.secret.rails "existingSecret") }}
+  {{- if not .Values.secret.rails.existingSecret }}
   rails:
     stringData:
-      SECRET_KEY_BASE: {{ required "Rails secret key base is required" .Values.secret.rails.secretKeyBase }}
+      SECRET_KEY_BASE: {{ required "Rails secret key base is required" .Values.secret.rails.secretKeyBase | quote }}
   {{- end }}
   {{- if .Values.secret.otp }}
-  {{- if not (hasKey .Values.secret.otp "existingSecret") }}
+  {{- if not .Values.secret.otp.existingSecret }}
   otp:
     stringData:
-      OTP_ENCRYPTION_PRIMARY_KEY: {{ required "OTP encryption primary key is required" .Values.secret.otp.encryptionPrimaryKey }}
-      OTP_ENCRYPTION_DETERMINISTIC_KEY: {{ required "OTP encryption deterministic key is required" .Values.secret.otp.encryptionDeterministicKey }}
-      OTP_ENCRYPTION_KEY_DERIVATION_SALT: {{ required "OTP encryption key derivation salt is required" .Values.secret.otp.encryptionKeyDerivationSalt }}
+      OTP_ENCRYPTION_PRIMARY_KEY: {{ required "OTP encryption primary key is required" .Values.secret.otp.encryptionPrimaryKey | quote }}
+      OTP_ENCRYPTION_DETERMINISTIC_KEY: {{ required "OTP encryption deterministic key is required" .Values.secret.otp.encryptionDeterministicKey | quote }}
+      OTP_ENCRYPTION_KEY_DERIVATION_SALT: {{ required "OTP encryption key derivation salt is required" .Values.secret.otp.encryptionKeyDerivationSalt | quote }}
   {{- end }}
   {{- end }}
 
@@ -77,6 +84,13 @@ controllers:
           PROMETHEUS_EXPORTER_ENABLED: {{ .Values.config.prometheus.enabled | quote }}
           SELF_HOSTED: {{ .Values.config.selfhosted | quote }}
           STORE_GEODATA: {{ .Values.config.store_geodata | quote }}
+          WEB_CONCURRENCY: {{ .Values.config.web.concurrency | quote }}
+          {{- with .Values.config.puid }}
+          PUID: {{ . | quote }}
+          {{- end }}
+          {{- with .Values.config.pgid }}
+          PGID: {{ . | quote }}
+          {{- end }}
         envFrom:
           {{- include "dawarich.envFrom" . | nindent 10 }}
         probes:
@@ -138,24 +152,43 @@ controllers:
           PROMETHEUS_EXPORTER_ENABLED: {{ .Values.config.prometheus.enabled | quote }}
           SELF_HOSTED: {{ .Values.config.selfhosted | quote }}
           STORE_GEODATA: {{ .Values.config.store_geodata | quote }}
+          {{- with .Values.config.puid }}
+          PUID: {{ . | quote }}
+          {{- end }}
+          {{- with .Values.config.pgid }}
+          PGID: {{ . | quote }}
+          {{- end }}
         envFrom:
           {{- include "dawarich.envFrom" . | nindent 10 }}
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              exec:
+                command:
+                  - pgrep
+                  - -f
+                  - sidekiq
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 30
 {{- end -}}
 
 {{/* Secrets shared by the web and sidekiq containers */}}
 {{- define "dawarich.envFrom" -}}
-{{- if not (hasKey .Values.secret.database "existingSecret") }}
+{{- if not .Values.secret.database.existingSecret }}
 - secret: database
 {{- else }}
 - secret: {{ .Values.secret.database.existingSecret }}
 {{- end }}
-{{- if not (hasKey .Values.secret.rails "existingSecret") }}
+{{- if not .Values.secret.rails.existingSecret }}
 - secret: rails
 {{- else }}
 - secret: {{ .Values.secret.rails.existingSecret }}
 {{- end }}
 {{- if .Values.secret.otp }}
-{{- if not (hasKey .Values.secret.otp "existingSecret") }}
+{{- if not .Values.secret.otp.existingSecret }}
 - secret: otp
 {{- else }}
 - secret: {{ .Values.secret.otp.existingSecret }}
