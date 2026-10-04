@@ -121,3 +121,16 @@ ingress:
 #   #   - secretName: navidrome-cert
 #   #     hosts:
 #   #       - navidrome.example.com
+
+route:
+# # -- Further Gateway API route configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml#L2088)
+  navidrome:
+    enabled: false
+#   # kind: HTTPRoute
+#   # hostnames:
+#   #   - navidrome.example.com
+#   # parentRefs:
+#   #   - name: gateway
+#   #     namespace: gateway-system
+#   # Rules default to routing to the Navidrome service.
