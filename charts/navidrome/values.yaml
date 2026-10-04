@@ -147,3 +147,16 @@ listenerSets:
 #   #   - name: http
 #   #     port: 80
 #   #     protocol: HTTP
+
+serviceMonitor:
+# # -- Further ServiceMonitor configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml#L2280)
+  navidrome:
+    enabled: false
+    endpoints:
+      - port: http
+        path: /metrics
+#   # Set config.Prometheus.Enabled to true to enable Navidrome's metrics endpoint.
+#   # When secret.prometheus (password or existing_secret) is set, basicAuth is added to
+#   # endpoints automatically (fixed username "navidrome"). An existing_secret must
+#   # contain the keys ND_PROMETHEUS_USERNAME (value: navidrome) and ND_PROMETHEUS_PASSWORD.
