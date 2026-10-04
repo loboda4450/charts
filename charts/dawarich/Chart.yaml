@@ -3,7 +3,7 @@ name: dawarich
 description: A Helm chart for Dawarich
 
 type: application
-version: 0.1.0-rc.1
+version: 0.1.0
 # renovate: image=freikin/dawarich
 appVersion: "1.15.3"
 
