@@ -131,6 +131,19 @@ route:
 #   # hostnames:
 #   #   - navidrome.example.com
 #   # parentRefs:
-#   #   - name: gateway
-#   #     namespace: gateway-system
+#   #   - identifier: navidrome
+#   #     sectionName: http
 #   # Rules default to routing to the Navidrome service.
+
+listenerSets:
+# # -- Further Gateway API ListenerSet configuration options are available here
+# #    [[ref]](https://github.com/bjw-s-labs/helm-charts/blob/common-5.2.1/charts/library/common/values.yaml#L2133)
+  navidrome:
+    enabled: false
+#   # parentRef:
+#   #   name: gateway
+#   #   namespace: gateway-system
+#   # listeners:
+#   #   - name: http
+#   #     port: 80
+#   #     protocol: HTTP
