@@ -70,8 +70,8 @@ route:
 #   # hostnames:
 #   #   - feishin.example.com
 #   # parentRefs:
-#   #   - name: gateway
-#   #     namespace: gateway-system
+#   #   - identifier: feishin
+#   #     sectionName: http
 #   # Rules default to routing to the Feishin service.
 
 listenerSets:
