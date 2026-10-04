@@ -15,65 +15,137 @@ image:
 
 secret:
 # # [[ref]](https://dawarich.app/docs/self-hosting/environment-variables/)
-# # -- Specify required secrets
-# # PostgreSQL (PostGIS) options:
+# # -- Sensitive values. Each group is either given inline or through `existing_secret`
+# #    (a Secret holding the listed environment variables), never both.
+# # Required groups:
   database:
     {}
 # # A) database:
-#     # host: postgres_host
-#     # port: 5432
-#     # name: dawarich
-#     # user: postgres_user
 #     # password: postgres_password
 # # B) database:
-#     # Note, that this secret must contain the following keys: DATABASE_HOST, DATABASE_PORT, DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD
-#     # existingSecret: database_existingSecret
-# # Rails options:
+#     # existing_secret: database_existing_secret  # keys: DATABASE_PASSWORD
   rails:
     {}
 # # A) rails:
-#     # secretKeyBase: fake
+#     # secret_key_base: fake  # openssl rand -hex 64
 # # B) rails:
-#     # Note, that this secret must contain the following keys: SECRET_KEY_BASE
-#     # existingSecret: rails_existingSecret
+#     # existing_secret: rails_existing_secret  # keys: SECRET_KEY_BASE
 # #
-# # Optional secrets which also enable/disable features:
-# # OTP (2FA) options:
-# # A) otp:
-#     # encryptionPrimaryKey: fake
-#     # encryptionDeterministicKey: fake
-#     # encryptionKeyDerivationSalt: fake
-# # B) otp:
-#     # Note, that this secret must contain the following keys: OTP_ENCRYPTION_PRIMARY_KEY, OTP_ENCRYPTION_DETERMINISTIC_KEY, OTP_ENCRYPTION_KEY_DERIVATION_SALT
-#     # existingSecret: otp_existingSecret
+# # Optional groups, rendered only when set:
+# # OTP (2FA), all three keys are required together:
+# # otp:
+#     # encryption_primary_key: fake
+#     # encryption_deterministic_key: fake
+#     # encryption_key_derivation_salt: fake
+#     # existing_secret: otp_existing_secret  # keys: OTP_ENCRYPTION_PRIMARY_KEY, OTP_ENCRYPTION_DETERMINISTIC_KEY, OTP_ENCRYPTION_KEY_DERIVATION_SALT
+# # OIDC, requires config.oidc to take effect:
+# # oidc:
+#     # client_id: fake
+#     # client_secret: fake
+#     # existing_secret: oidc_existing_secret  # keys: OIDC_CLIENT_ID, OIDC_CLIENT_SECRET
+# # SMTP, requires config.smtp to take effect:
+# # smtp:
+#     # username: fake
+#     # password: fake
+#     # existing_secret: smtp_existing_secret  # keys: SMTP_USERNAME, SMTP_PASSWORD
+# # Sidekiq dashboard credentials:
+# # sidekiq:
+#     # username: fake
+#     # password: fake
+#     # existing_secret: sidekiq_existing_secret  # keys: SIDEKIQ_USERNAME, SIDEKIQ_PASSWORD
+# # Reverse geocoding API keys, set only the ones you need:
+# # geocoding:
+#     # photon_api_key: fake
+#     # geoapify_api_key: fake
+#     # nominatim_api_key: fake
+#     # existing_secret: geocoding_existing_secret  # keys: PHOTON_API_KEY, GEOAPIFY_API_KEY, NOMINATIM_API_KEY
+# # Key for encrypting archived raw data:
+# # archive:
+#     # encryption_key: fake
+#     # existing_secret: archive_existing_secret  # keys: ARCHIVE_ENCRYPTION_KEY
 
 config:
-# # -- Application configuration, mapped to environment variables
+# # -- Application configuration, mapped to environment variables. Unset values fall back to application defaults.
+# #    Sensitive values belong to `secret`, not here.
 # #    [[ref]](https://dawarich.app/docs/self-hosting/environment-variables/)
   rails:
     env: production
     log_to_stdout: true
+#   # -- Connection pool size, keep it at or above sidekiq.concurrency
+    max_threads:
   application:
     hosts:
       - dawarich.example.com
+#   # -- Public hostname used in outgoing emails, no protocol. Required for email delivery
+    domain:
   timezone: Europe/Warsaw
   protocol: https
-  prometheus:
-    enabled: false
+  distance_unit:
+  min_minutes_spent_in_city:
   selfhosted: true
-  store_geodata: true
+  database:
+    host:
+    port: 5432
+    name:
+    user:
+  redis:
+#   # -- Required unless valkey.enabled is true
+#   # url: redis://redis.example.com:6379
+    url:
+    cache_db:
+    job_queue_db:
+    ws_db:
   web:
 #   # -- Puma workers. One is plenty for a household instance, raise for busier ones
     concurrency: 1
   sidekiq:
 #   # -- Job threads. Keeps idle memory and DB connections low, raise temporarily for large imports
     concurrency: 3
+  geocoding:
+    store_geodata: true
+    photon:
+      host:
+      use_https:
+    nominatim:
+      host:
+      use_https:
+# # -- OIDC [[ref]](https://dawarich.app/docs/self-hosting/configuration/oidc-authentication/)
+# #    Credentials go to `secret.oidc`. Use either issuer (discovery) or host and endpoints
+  oidc:
+    issuer:
+    redirect_uri:
+    provider_name:
+    auto_register:
+    pkce_enabled:
+    host:
+    scheme:
+    port:
+    authorization_endpoint:
+    token_endpoint:
+    userinfo_endpoint:
+  allow_email_password_registration:
+  allow_email_password_login:
+# # -- SMTP, credentials go to `secret.smtp`
+  smtp:
+    server:
+    port:
+    domain:
+    from:
+    authentication:
+    starttls:
+    open_timeout:
+    read_timeout:
+  prometheus:
+#   # -- Exporter runs in the web container only
+    enabled: false
+    host:
+    port:
+  archive_raw_data:
 #   # -- Run the app as a non-root user by setting PUID/PGID (do NOT use securityContext runAsUser)
 #   # puid: 1000
 #   # pgid: 1000
-  redis:
-#   # -- Required unless valkey.enabled is true
-#   # url: redis://redis.example.com:6379
+# # -- Any other non-sensitive environment variables
+  extraEnv:
     {}
 
 valkey:
