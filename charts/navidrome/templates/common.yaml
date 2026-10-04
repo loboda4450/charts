@@ -26,6 +26,7 @@ secrets:
   prometheus:
     suffix: prometheus
     stringData:
+      ND_PROMETHEUS_USERNAME: navidrome
       ND_PROMETHEUS_PASSWORD: {{ required "Prometheus password is required when set" .Values.secret.prometheus.password }}
   {{- end }}
   {{- end }}
@@ -149,6 +150,22 @@ controllers:
           {{- end }}
         {{- end }}
 {{ end }}
+{{/* Navidrome protects metrics with Basic Auth (fixed user "navidrome") when a Prometheus password is set */}}
+{{- if and (hasKey .Values.secret "prometheus") (not (empty .Values.secret.prometheus)) }}
+  {{- $fullname := `{{ include "bjw-s.common.lib.chart.names.fullname" . }}` }}
+  {{- $passwordSecret := .Values.secret.prometheus.existing_secret | default (printf "%s-prometheus" $fullname) }}
+  {{- range $name, $monitor := .Values.serviceMonitor }}
+    {{- range $endpoint := $monitor.endpoints }}
+      {{- if not (hasKey $endpoint "basicAuth") }}
+        {{- $_ := set $endpoint "basicAuth" (dict
+          "username" (dict "name" $passwordSecret "key" "ND_PROMETHEUS_USERNAME")
+          "password" (dict "name" $passwordSecret "key" "ND_PROMETHEUS_PASSWORD")
+        ) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
 {{- $_ := merge .Values (include "navidrome.preprocess" . | fromYaml) -}}
 
 {{/* Render the templates */}}
