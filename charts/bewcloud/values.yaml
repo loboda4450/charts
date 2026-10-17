@@ -11,7 +11,7 @@ image:
 # # -- image pull policy
   pullPolicy: IfNotPresent
 # # -- image tag
-  tag: v4.19.0@sha256:0c049caa1c544e42657fb215b8b646c13a164ddadd1b523db37f8345f2e1ca4a
+  tag: v4.20.0@sha256:6d020ca23a10841d2329d7b7f4958e1fa80f4e6ebdbd4e777fd0cac6e18e61eb
 
 radicale:
 # # -- Enable Radicale calendar server
