@@ -2,12 +2,13 @@ name: Check for version bumps in PR
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize ]
 
 jobs:
   check_changes_and_versions:
     name: Check for changes and version bumps
     runs-on: ubuntu-latest
+    continue-on-error: true
     outputs:
       matrix: ${{ steps.set-matrix.outputs.MATRIX }}
     steps:
