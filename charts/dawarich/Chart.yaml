@@ -3,9 +3,9 @@ name: dawarich
 description: A Helm chart for Dawarich
 
 type: application
-version: 0.1.8
+version: 0.1.9
 # renovate: image=freikin/dawarich
-appVersion: "1.21.0"
+appVersion: "1.22.0"
 
 dependencies:
   - name: common
