@@ -3,7 +3,7 @@ name: dawarich
 description: A Helm chart for Dawarich
 
 type: application
-version: 0.1.9
+version: 0.1.10
 # renovate: image=freikin/dawarich
 appVersion: "1.22.0"
 
@@ -13,5 +13,5 @@ dependencies:
     version: 5.3.0
   - name: valkey
     condition: valkey.enabled
-    version: 0.12.1
+    version: 1.0.0
     repository: https://valkey.io/valkey-helm/
