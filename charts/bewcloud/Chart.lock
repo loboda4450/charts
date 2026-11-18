@@ -4,6 +4,6 @@ dependencies:
   version: 5.3.0
 - name: radicale
   repository: oci://ghcr.io/loboda4450/charts
-  version: 0.2.13
-digest: sha256:2b2375298ac50f3f1d2ce1fbbd64649d530fa3dc0dd47237d908b6d5a0ace0b1
-generated: "2026-11-13T13:36:23.416688098Z"
+  version: 0.2.14
+digest: sha256:c2f2f37edc65e551bd322430559d6fbfb02283318675b5fe816bfceceda64e87
+generated: "2026-11-18T08:37:49.978998881Z"
